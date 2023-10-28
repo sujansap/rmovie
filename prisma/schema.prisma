@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// schema.prisma
+
+model userTypes {
+  userTypeId Int     @id @default(autoincrement())
+  name       String
+  users      users[]
+}
+
+model users {
+  userId        Int             @id @default(autoincrement())
+  firstName     String
+  lastName      String
+  userTypeId    Int
+  userType      userTypes       @relation(fields: [userTypeId], references: [userTypeId])
+  watchedMovies watchedMovies[]
+  movies        movies[]
+}
+
+model genres {
+  genreId     Int           @id @default(autoincrement())
+  genre       String
+  genreMovies genreMovies[]
+}
+
+model movies {
+  movieId       Int             @id @default(autoincrement())
+  title         String
+  userId        Int
+  user          users           @relation(fields: [userId], references: [userId])
+  watchedMovies watchedMovies[]
+  genreMovies   genreMovies[]
+}
+
+model watchedMovies {
+  userId  Int
+  movieId Int
+  rating  Int
+  review  String?
+  user    users   @relation(fields: [userId], references: [userId])
+  movie   movies  @relation(fields: [movieId], references: [movieId])
+
+  @@id([userId, movieId])
+}
+
+model genreMovies {
+  genreId Int
+  movieId Int
+  genre   genres @relation(fields: [genreId], references: [genreId])
+  movie   movies @relation(fields: [movieId], references: [movieId])
+
+  @@id([genreId, movieId])
+}

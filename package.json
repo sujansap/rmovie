@@ -1,13 +1,19 @@
 {
   "name": "2324-webservices-sujansapkota2",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.js",
   "repository": "https://github.com/Web-IV/2324-webservices-sujansapkota2.git",
   "author": "Sujan Sapkota <sujan.sapkota@student.hogent.be>",
   "license": "MIT",
   "dependencies": {
+    "@koa/cors": "^4.0.0",
+    "@koa/router": "^11.0.2",
+    "@prisma/client": "^5.5.2",
     "config": "^3.3.9",
+    "knex": "^3.0.1",
     "koa": "^2.14.2",
+    "koa-bodyparser": "^4.4.1",
+    "mysql2": "^3.6.2",
     "winston": "^3.11.0"
   },
   "scripts": {
@@ -15,7 +21,8 @@
   },
   "devDependencies": {
     "env-cmd": "^10.1.0",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "prisma": "^5.5.2"
   },
   "nodemonConfig": {
     "signal": "SIGTERM",
@@ -31,6 +38,6 @@
     ],
     "ext": "js,json",
     "legacyWatch": true,
-    "exec": "node --inspect=0.0.0.0:9001 --trace-warnings index.js"
+    "exec": "node --inspect=0.0.0.0:9001 --trace-warnings src/index.js"
   }
 }

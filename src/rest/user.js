@@ -8,6 +8,10 @@ const getAllUsers = async(ctx)=>{
     ctx.body = data;
 }
 
+const getUserById = async(ctx)=>{
+    const user = await userService.getById(Number(ctx.params.id)); 
+    ctx.body = user;
+}
 
 module.exports = (app)=>{
     const router = new Router (
@@ -15,7 +19,7 @@ module.exports = (app)=>{
     );
 
     router.get('/', getAllUsers);
-    //router.get('/:id', );
+    router.get('/:id', getUserById);
     
     app.use(router.routes())
      .use(router.allowedMethods());

@@ -16,7 +16,29 @@ const getAll = async () => {
     }
 }
 
+const getById = async (id) => {
+  try {
+      const user = await prisma
+          .users
+          .findMany({
+                  where: {
+                  userId: id,
+                  },
+               }
+          );
+    return user
+  } catch (error) {
+    getLogger().error('Error', {
+      error,
+    });
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 module.exports={
-    getAll
+    getAll,
+    getById
 }
 

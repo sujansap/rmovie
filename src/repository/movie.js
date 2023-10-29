@@ -78,9 +78,36 @@ const add = async (movieTitle, user)=>{
     await prisma.$disconnect();
   }
 }
+
+const updateById = async (id, {title, user}) => {
+  try {
+    console.log("here done");
+    await prisma[tables.movies].update({
+      where: {
+        movieId: id
+      }, 
+      data:{
+        title:title,
+        userId:user 
+      }
+    });
+    return id;
+  } catch (error) {
+    getLogger().error('Error', {
+      error,
+    });
+  }finally{
+    await prisma.$disconnect();
+  }
+  
+}
+
+
+
 module.exports = {
     getAll,
     getById,
     deleteById,
     add,
+    updateById
 }

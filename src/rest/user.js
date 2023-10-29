@@ -13,6 +13,8 @@ const getUserById = async(ctx)=>{
     ctx.body = user;
 }
 
+
+
 module.exports = (app)=>{
     const router = new Router (
         {prefix: '/users'}

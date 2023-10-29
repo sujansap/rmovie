@@ -21,11 +21,16 @@ const deleteById = async (id) => {
 const addMovie = async(title, user) =>{
     await movieRepository.add(title, user);
 }
+
+const updateMovie = async (id, data)=>{
+    return await movieRepository.updateById(id, data);
+}
 // de rest nog uitwerken
 
 module.exports = {
     getAll,
     getById,
     deleteById,
-    addMovie
+    addMovie, 
+    updateMovie
 }; 

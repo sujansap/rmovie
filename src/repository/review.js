@@ -52,9 +52,28 @@ const getById = async (uid, mid) => {
     }
 }
 
-
+const add = async(uid, mid, review, rating)=>{
+  try {
+    const reviewedMovie = await prisma[tables.reviews].create(
+      {
+        data:{
+          userId:uid,
+          movieId:mid,
+          review:review,
+          rating:rating
+        }
+      }
+    );
+    return reviewedMovie
+  } catch (error) {
+    
+  } finally{
+    await prisma.$disconnect();
+  }
+}
 
 module.exports = {
     getAll,
-    getById
+    getById, 
+    add
 }

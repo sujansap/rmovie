@@ -11,11 +11,15 @@ const getById = async (uid, mid) => {
     return data;
 };
 
- 
+ const add = async(uid, mid, review, rating)=>{
+    const addedMovie = await reviewRepository.add(uid, mid, review, rating);
+    return addedMovie
+ }
 
 // de rest nog uitwerken
 
 module.exports = {
     getAll,
-    getById
+    getById,
+    add
 }; 

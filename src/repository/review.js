@@ -1,7 +1,7 @@
 const { getLogger } = require('../core/logging');
 const {prisma, tables} = require('../data/index');
 
-
+const TABLE = tables.reviews
 /*     const reviews = await prisma
 .watchedMovies
 .findMany({
@@ -14,7 +14,7 @@ const {prisma, tables} = require('../data/index');
 
 const getAll = async (uid) => {
     try {
-      const reviews = await prisma[tables.reviews]
+      const reviews = await prisma[TABLE]
           .findMany({
             where: {
               userId:uid
@@ -33,7 +33,7 @@ const getAll = async (uid) => {
 
 const getById = async (uid, mid) => {
     try {
-        const review = await prisma[tables.reviews]
+        const review = await prisma[TABLE]
             .findMany({
                     where: {
                     userId: uid, 
@@ -52,9 +52,32 @@ const getById = async (uid, mid) => {
     }
 }
 
+const deleteById = async (uid, mid)=>{
+  try {
+    const rows = await prisma[TABLE].delete({
+      where:{
+        "userId_movieId":{
+          userId:uid,
+          movieId: mid
+        }
+      }
+    });
+
+    return rows>0
+  } catch (error) {
+    getLogger().error('Error', {
+      error,
+    });
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+
 const add = async(uid, mid, review, rating)=>{
   try {
-    const reviewedMovie = await prisma[tables.reviews].create(
+    const reviewedMovie = await prisma[TABLE].create(
       {
         data:{
           userId:uid,
@@ -66,7 +89,10 @@ const add = async(uid, mid, review, rating)=>{
     );
     return reviewedMovie
   } catch (error) {
-    
+    getLogger().error('error with adding', {
+      error,
+    });
+    throw error;
   } finally{
     await prisma.$disconnect();
   }
@@ -75,5 +101,6 @@ const add = async(uid, mid, review, rating)=>{
 module.exports = {
     getAll,
     getById, 
-    add
+    add,
+    deleteById
 }

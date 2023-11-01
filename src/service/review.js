@@ -1,4 +1,5 @@
 //let { MOVIES, REVIEWS } = require('../data/mock_data');
+const c = require('config');
 const reviewRepository = require('../repository/review');
 
 const getAll = async (uid) => {
@@ -16,10 +17,16 @@ const getById = async (uid, mid) => {
     return addedMovie
  }
 
+
+const deleteById = async(uid, mid)=>{
+    return await reviewRepository.deleteById(uid, mid)
+}
+
 // de rest nog uitwerken
 
 module.exports = {
     getAll,
     getById,
-    add
+    add,
+    deleteById
 }; 

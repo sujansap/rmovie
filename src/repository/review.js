@@ -1,5 +1,5 @@
 const { getLogger } = require('../core/logging');
-const {prisma} = require('../data/index');
+const {prisma, tables} = require('../data/index');
 
 
 /*     const reviews = await prisma
@@ -12,9 +12,14 @@ const {prisma} = require('../data/index');
 );
 */
 
-const getAll = async (table) => {
+const getAll = async (uid) => {
     try {
-      const reviews = await prisma[table].findMany();
+      const reviews = await prisma[tables.reviews]
+          .findMany({
+            where: {
+              userId:uid
+            }
+          });
       return reviews
     } catch (error) {
       getLogger().error('Error', {
@@ -26,13 +31,13 @@ const getAll = async (table) => {
     }
 }
 
-const getById = async (id) => {
+const getById = async (uid, mid) => {
     try {
-        const review = await prisma
-            .watchedMovies
+        const review = await prisma[tables.reviews]
             .findMany({
                     where: {
-                    movieId: id,
+                    userId: uid, 
+                    movieId: mid,
                     },
                  }
             );

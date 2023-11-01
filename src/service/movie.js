@@ -18,8 +18,8 @@ const deleteById = async (id) => {
     }
 };
 
-const addMovie = async(title, user) =>{
-    await movieRepository.add(title, user);
+const addMovie = async(title, user,poster,synopsis) =>{
+    await movieRepository.add(title, user,poster, synopsis);
 }
 
 const updateMovie = async (id, data)=>{

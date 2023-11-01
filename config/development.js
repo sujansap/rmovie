@@ -10,7 +10,10 @@ module.exports = {
     database_tables: {
       users: 'TABLE_USERS',
       reviews: 'TABLE_REVIEWS',
-      movies: 'TABLE_MOVIES'
+      movies: 'TABLE_MOVIES',
+      usertypes: 'TABLE_USERTYPES',
+      genres: 'TABLE_GENRES',
+      movieGenres: 'TABLE_MOVIEGENRES'
     },
   };
   

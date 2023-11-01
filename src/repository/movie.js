@@ -54,7 +54,8 @@ const deleteById = async (id)=>{
     await prisma.$disconnect();
   }
 }
-const add = async (movieTitle, user)=>{
+
+const add = async (movieTitle, user,poster, synopsis)=>{
   //when you add a movie, you have to give genres, but genres are added to different table
   //for that reason we need to know the id of the movie row we just added into the db
 
@@ -62,7 +63,9 @@ const add = async (movieTitle, user)=>{
     const movie = await prisma[tables.movies].create({
       data:{
         title:movieTitle,
-        userId:user
+        userId:user,
+        poster:poster,
+        synopsis:synopsis
       }
     });
     const id = movie.movieId;

@@ -14,7 +14,6 @@ const getUserById = async(ctx)=>{
 }
 
 
-
 module.exports = (app)=>{
     const router = new Router (
         {prefix: '/users'}

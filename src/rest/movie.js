@@ -23,11 +23,12 @@ const deleteMovie = async(ctx)=>{
 }
 
 const addMovie = async(ctx)=>{
-    //later the 1 needs to change to the user that is logged in at the moment of adding
     const d = {...ctx.request.body};
     console.log("under here");
     console.log(d)
-    await movieService.addMovie(d.title, 1);
+    //later the 1 needs to change to the user that is logged in at the moment of adding
+
+    await movieService.addMovie(d.title, 1,d.poster,d.synopsis);
     ctx.status = 204;
 }
 

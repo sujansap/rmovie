@@ -12,6 +12,11 @@ const getById = async (uid, mid) => {
     return data;
 };
 
+const getFullReviewById = async (uid, mid) => {
+    const data = await reviewRepository.getFullReviewById(uid, mid);
+    return data
+};
+
  const add = async(uid, mid, review, rating)=>{
     const addedMovie = await reviewRepository.add(uid, mid, review, rating);
     return addedMovie
@@ -28,5 +33,6 @@ module.exports = {
     getAll,
     getById,
     add,
-    deleteById
+    deleteById,
+    getFullReviewById
 }; 

@@ -75,6 +75,43 @@ const deleteById = async (uid, mid)=>{
 }
 
 
+const getFullReviewById = async (uid, mid) =>{
+  try {
+    const review = await prisma[TABLE]
+        .findUnique({
+          where:{
+            "userId_movieId":{
+              userId:uid,
+              movieId: mid
+            }
+          },
+          include: {
+            user: {
+              select: {
+                username: true,
+              },
+            },
+            movie:{
+              select:{
+                title: true,
+              }
+            }
+            
+          }
+        }
+        );
+  console.log("test---");
+  return review
+} catch (error) {
+  getLogger().error('Error', {
+    error,
+  });
+  throw error;
+} finally {
+  await prisma.$disconnect();
+}
+}
+
 const add = async(uid, mid, review, rating)=>{
   try {
     const reviewedMovie = await prisma[TABLE].create(
@@ -102,5 +139,6 @@ module.exports = {
     getAll,
     getById, 
     add,
-    deleteById
+    deleteById,
+    getFullReviewById
 }

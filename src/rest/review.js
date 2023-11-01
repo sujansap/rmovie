@@ -7,8 +7,8 @@ const getAllReviews = async(ctx)=>{
     ctx.body = data;
 }
 
-const getReviewById = async (ctx) => {
-    ctx.body = await reviewService.getById(Number(ctx.params.userId), Number(ctx.params.movieId));
+const getFullReviewById = async (ctx) => {
+    ctx.body = await reviewService.getFullReviewById(Number(ctx.params.userId), Number(ctx.params.movieId));
 };
 
 const addReview = async(ctx)=>{
@@ -43,7 +43,7 @@ module.exports = (app)=>{
     //geef alle reviews van een bepaalde gebruiker
     router.get('/users/:userId/movies/', getAllReviews);
     //geef een bepaalde review van een bepaalde gebruiker
-    router.get('/users/:userId/movies/:movieId', getReviewById);
+    router.get('/users/:userId/movies/:movieId', getFullReviewById);
     router.post('/users/:userId/movies/:movieId', addReview);
     router.delete('/users/:userId/movies/:movieId', deleteReview);
     app.use(router.routes())

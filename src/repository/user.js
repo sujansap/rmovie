@@ -1,45 +1,50 @@
 const { getLogger } = require('../core/logging');
 const {prisma, tables} = require('../data/index');
 
-const getAll = async () => {
-    try {
-      const users = await prisma[tables.users].findMany();
- 
-      return users
-    } catch (error) {
-      getLogger().error('Error', {
-        error,
-      });
-      throw error;
-    } finally {
-      await prisma.$disconnect();
-    }
+const dbData = require('./index');
+const TABLE = tables.users;
+
+const getAll = async ()=>{
+  //there is no filter  //we just want all the data
+  filter = {};
+  return await dbData.getAllData(TABLE, filter);
 }
+
+const getReviewsForUser = async (uid)=>{
+  //there is no filter  //we just want all the data
+  filter = 
+  {
+    where: {
+      userId:uid
+    }
+  };
+  
+  return await dbData.getAllData(tables.reviews, filter);
+}
+
+const getReviewForMovieForUser = async (uid, mid)=>{
+  //there is no filter  //we just want all the data
+  filter = 
+  {
+    where: {
+    userId: uid, 
+    movieId: mid,
+    }
+ }
+  
+  return await dbData.getAllData(tables.reviews, filter);
+}
+
 
 const getById = async (id) => {
-  try {
-      const user = await prisma
-          .users
-          .findMany({
-                  where: {
-                  userId: id,
-                  },
-               }
-          );
-    return user
-  } catch (error) {
-    getLogger().error('Error', {
-      error,
-    });
-    throw error;
-  } finally {
-    await prisma.$disconnect();
-  }
+  const filter = { where: {userId: id} };
+  return await dbData.getDataById(TABLE,filter);
 }
-
 
 module.exports={
     getAll,
-    getById
+    getById,
+    getReviewsForUser,
+    getReviewForMovieForUser
 }
 

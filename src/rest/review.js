@@ -1,5 +1,17 @@
 const Router = require('@koa/router');
 const reviewService = require('../service/review');
+//over reviews
+// users/:id/movies/:id/reviews => geef review van een bepaald movie van een bepaald gebruiker
+// users/:id/movies/reviews => geef alle reviews die door een user zijn gepost
+
+//movies/:id/reviews => geef alle reviews van een bepaalde movie
+//users/:id/reviews => geef alle reviews van een bepaalde gebruiker
+
+
+
+//over movies
+// users/:id/movies //geef alle movies 
+// movies/reviews   //geef alle reviews van alle movies van aangemelde gebruiker 
 
 const getAllReviews = async(ctx)=>{
     const data = await reviewService.getAll(Number(ctx.params.userId));

@@ -12,8 +12,8 @@ module.exports = {
       reviews: 'TABLE_REVIEWS',
       movies: 'TABLE_MOVIES',
       usertypes: 'TABLE_USERTYPES',
+      genreMovies: 'TABLE_GENREMOVIES',
       genres: 'TABLE_GENRES',
-      movieGenres: 'TABLE_MOVIEGENRES'
-
+   
     },
   };

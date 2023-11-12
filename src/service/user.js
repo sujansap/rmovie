@@ -10,7 +10,20 @@ const getById = async (id) => {
     return data
 };
 
+
+const getReviewsForUser = async (id) => {
+    const data  = await userRepository.getReviewsForUser(id);
+    return {items:data, length:data.length}
+};
+
+const getReviewForMovieForUser = async (uid, mid) => {
+    const data  = await userRepository.getReviewForMovieForUser(uid, mid);
+    return data
+};
+
 module.exports = {
     getAll,
-    getById
+    getById,
+    getReviewsForUser,
+    getReviewForMovieForUser
 }; 

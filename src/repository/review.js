@@ -12,6 +12,7 @@ const TABLE = tables.reviews
 );
 */
 
+//get all reviews for a user
 const getAll = async (uid) => {
     try {
       const reviews = await prisma[TABLE]
@@ -31,6 +32,7 @@ const getAll = async (uid) => {
     }
 }
 
+//get a review for a user for a movie
 const getById = async (uid, mid) => {
     try {
         const review = await prisma[TABLE]
@@ -74,7 +76,7 @@ const deleteById = async (uid, mid)=>{
   }
 }
 
-
+//get the full review of a movie for a user
 const getFullReviewById = async (uid, mid) =>{
   try {
     const review = await prisma[TABLE]
@@ -112,6 +114,7 @@ const getFullReviewById = async (uid, mid) =>{
 }
 }
 
+//add a review for a movie for a user
 const add = async(uid, mid, review, rating)=>{
   try {
     const reviewedMovie = await prisma[TABLE].create(

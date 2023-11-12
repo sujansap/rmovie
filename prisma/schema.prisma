@@ -12,9 +12,10 @@ datasource db {
 
 // schema.prisma
 //onDelete, CASCADE=>bij knex
+
 model userTypes {
   userTypeId Int     @id @default(autoincrement())
-  name       String
+  name       String   @unique
   users      users[]
 }
 
@@ -25,6 +26,7 @@ model users {
   password   String
   about      String?   @db.LongText
   userTypeId Int
+
   userType   userTypes @relation(fields: [userTypeId], references: [userTypeId])
   reviews    reviews[]
   movies     movies[]
@@ -32,7 +34,7 @@ model users {
 
 model genres {
   genreId     Int           @id @default(autoincrement())
-  genre       String
+  genre       String        @unique
   genreMovies genreMovies[]
 }
 
@@ -43,8 +45,8 @@ model movies {
   poster      String      @db.LongText
   userId      Int
   user        users         @relation(fields: [userId], references: [userId])
-  reviews     reviews[]
-  genreMovies genreMovies[]
+  reviews     reviews[]    
+  genreMovies genreMovies[]  
 }
 
 model reviews {
@@ -55,7 +57,7 @@ model reviews {
   date    DateTime @default(now())
   user    users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
   movie   movies   @relation(fields: [movieId], references: [movieId], onDelete: Cascade)
-
+  //als een movie verwijdert wordt moeten alle reviews van een movie ook verwijderd worden
   @@id([userId, movieId])
 }
 
@@ -63,7 +65,7 @@ model genreMovies {
   genreId Int
   movieId Int
   genre   genres @relation(fields: [genreId], references: [genreId])
-  movie   movies @relation(fields: [movieId], references: [movieId])
+  movie   movies @relation(fields: [movieId], references: [movieId], onDelete: Cascade)
 
   @@id([genreId, movieId])
 }

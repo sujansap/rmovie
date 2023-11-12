@@ -8,10 +8,23 @@ const getAllUsers = async(ctx)=>{
     ctx.body = data;
 }
 
+
 const getUserById = async(ctx)=>{
     const user = await userService.getById(Number(ctx.params.id)); 
     ctx.body = user;
 }
+
+
+const getAllReviewsForUser = async(ctx)=>{
+    const data = await userService.getReviewsForUser(Number(ctx.params.id)); 
+    ctx.body = data;
+}
+
+const getReviewForMovieForUser = async(ctx)=>{
+    const data = await userService.getReviewForMovieForUser(Number(ctx.params.userId), Number(ctx.params.movieId)); 
+    ctx.body = data;
+}
+
 
 
 module.exports = (app)=>{
@@ -21,6 +34,8 @@ module.exports = (app)=>{
 
     router.get('/', getAllUsers);
     router.get('/:id', getUserById);
+    router.get('/:id/reviews', getAllReviewsForUser);
+    router.get('/:userId/movies/:movieId/reviews', getReviewForMovieForUser);
     
     app.use(router.routes())
      .use(router.allowedMethods());

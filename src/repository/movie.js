@@ -1,86 +1,113 @@
 const { getLogger } = require('../core/logging');
 const {prisma, tables} = require('../data/index');
+const {addGenres} = require('./genre');
+
+
+const dbData = require('./index');
+
+const TABLE = tables.movies;
 
 const getAll = async () => {
-    try {
-      const reviews = await prisma[tables.movies].findMany();
- 
-      return reviews
-    } catch (error) {
-      getLogger().error('Error', {
-        error,
-      });
-      throw error;
-    } finally {
-      await prisma.$disconnect();
+  const filter = {};
+  return await dbData.getAllData(TABLE, filter);
+}
+
+const getAllReviewsForMovie = async (mid) => {
+  const filter = {
+    where:{
+      movieId:mid
     }
+  };
+  return await dbData.getAllData(tables.reviews, filter);
 }
 
 
-const getById = async (id) => {
-  try {
-    const review = await prisma[tables.movies].findUnique({
-      where:{
-        movieId: id
+const getMovieGenre = async (mid)=> {
+  const filter =
+  {
+    where: { movieId: mid },
+    select: 
+    {
+      genreMovies: 
+      {
+        select: 
+        {
+          genre: 
+          {
+            select: 
+            {
+              genre: true
+            }
+          }
+        }
       }
-    });
+    }
+  };
+  return await dbData.getDataById(TABLE, filter);
+}
 
-    return review
-  } catch (error) {
-    getLogger().error('Error', {
-      error,
-    });
-    throw error;
-  } finally {
-    await prisma.$disconnect();
+const getById = async (id) => {
+  const filter = {
+    where:{
+      movieId: id
+    }
   }
+  return await dbData.getDataById(TABLE, filter);
+
 }
 
 const deleteById = async (id)=>{
-  try {
-    const rows = await prisma[tables.movies].delete({
-      where:{
-        movieId: id
-      }
-    });
 
-    return rows>0
-  } catch (error) {
-    getLogger().error('Error', {
-      error,
-    });
-    throw error;
-  } finally {
-    await prisma.$disconnect();
-  }
+  const filter = {
+    where:{
+      movieId: id
+    }
+  };
+
+  return await dbData.deleteDataById(TABLE, filter);
 }
 
-const add = async (movieTitle, user,poster, synopsis)=>{
+
+// add moet nog in index
+const addMovie = async (movieTitle, user,poster, synopsis, genres)=>{
   //when you add a movie, you have to give genres, but genres are added to different table
   //for that reason we need to know the id of the movie row we just added into the db
+  const movie={
+    data:{
+      title:movieTitle,
+      userId:user,
+      poster:poster,
+      synopsis:synopsis
+    }
+  };
 
-  try {
-    const movie = await prisma[tables.movies].create({
-      data:{
-        title:movieTitle,
-        userId:user,
-        poster:poster,
-        synopsis:synopsis
-      }
-    });
-    const id = movie.movieId;
-    console.log(id)
-    return id;
-
-  } catch (error) {
-    getLogger().error('Error', {
-      error,
-    });
-    throw error;
-  } finally {
-    await prisma.$disconnect();
-  }
+  const addedMovie = await dbData.addData(TABLE,movie);
+  const id = addedMovie.movieId;
+  console.log("test genres------");
+  console.log(id);
+  
+  addGenres(id, genres);
+  return id;
+  
 }
+
+const addReview = async(uid, mid, review, rating)=>{
+
+  const dataReview =
+  {
+    data:{
+      userId:uid,
+      movieId:mid,
+      review:review,
+      rating:rating
+    }
+  }
+  
+  return await dbData.addData(tables.reviews, dataReview);
+}
+
+
+
 
 const updateById = async (id, {title, user}) => {
   try {
@@ -111,6 +138,9 @@ module.exports = {
     getAll,
     getById,
     deleteById,
-    add,
-    updateById
+    addMovie,
+    updateById,
+    getMovieGenre,
+    getAllReviewsForMovie,
+    addReview
 }

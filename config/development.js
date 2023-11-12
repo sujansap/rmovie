@@ -13,7 +13,7 @@ module.exports = {
       movies: 'TABLE_MOVIES',
       usertypes: 'TABLE_USERTYPES',
       genres: 'TABLE_GENRES',
-      movieGenres: 'TABLE_MOVIEGENRES'
+      genreMovies: 'TABLE_GENREMOVIES'
     },
   };
   

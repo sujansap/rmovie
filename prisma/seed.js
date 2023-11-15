@@ -1,16 +1,25 @@
-const { PrismaClient } = require('@prisma/client')
+const { PrismaClient } = require('@prisma/client');
+
 const config = require('config');
 const TABLE_USERS = config.get('database_tables.users');
 const TABLE_REVIEWS = config.get('database_tables.reviews');
 const TABLE_MOVIES = config.get('database_tables.movies');
 const TABLE_USERTYPES = config.get('database_tables.usertypes');
 const TABLE_GENRES = config.get('database_tables.genres');
-const TABLE_MOVIEGENRES = config.get('database_tables.movieGenres');
+const TABLE_MOVIEGENRES = "genreMovies";
+
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.reviews.deleteMany({});
+  await prisma.genreMovies.deleteMany({});
+  await prisma.movies.deleteMany({});
+  await prisma.genres.deleteMany({});
+  await prisma.users.deleteMany({});
+  await prisma.userTypes.deleteMany({});
 
-  const userType1 = await prisma[TABLE_USERTYPES].create({
+  console.log("seeding the db....");
+/*  const userType1 = await prisma[TABLE_USERTYPES].create({
     data: {
       name: 'user',
     },
@@ -105,6 +114,7 @@ async function main() {
       review: 'Funny movie!',
     },
   });
+  */
 }
 
 
@@ -117,5 +127,6 @@ const seed = async () =>{
         await prisma.$disconnect();
     }
 }
+
 
 seed();

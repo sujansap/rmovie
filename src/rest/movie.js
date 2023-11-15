@@ -49,6 +49,7 @@ const addMovie = async(ctx)=>{
 
 
 const addReview = async(ctx)=>{
+    //wat moet er precies gebeuren als een user al een review heeft voor die film
     const data = {...ctx.request.body};
     console.log("adding a review test: " + Number(ctx.params.id) );
     ctx.body = await movieService.

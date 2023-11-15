@@ -67,6 +67,7 @@ const deleteById = async (uid, mid)=>{
 
     return rows>0
   } catch (error) {
+  
     getLogger().error('Error', {
       error,
     });

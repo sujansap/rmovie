@@ -44,8 +44,7 @@ const addMovie = async(title, user,poster,synopsis,genres) =>{
 const addReview = async(uid, mid, review, rating)=>{
     const addedMovie = await movieRepository.addReview(uid, mid, review, rating);
     return addedMovie
- }
-
+}
 
 const updateMovie = async (id, data)=>{
     return await movieRepository.updateById(id, data);

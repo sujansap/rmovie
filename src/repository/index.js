@@ -1,7 +1,6 @@
 const { getLogger } = require('../core/logging');
 const {prisma} = require('../data/index');
 
-
 //Alle service bestand hebben ook een bestanden in repo 
 // als een functie te eenvoud is en voor alle bestanden gelijk is 
 // wordt het hier in index gezet
@@ -12,7 +11,7 @@ const getAllData = async (table, filter) => {
     try {
       console.log("Receved table:" + table)
       const data = await prisma[table].findMany(filter);
-
+      
       return data
     } catch (error) {
       getLogger().error('Error', {
@@ -38,7 +37,6 @@ const getDataById = async (table, filter) => {
     }
   }
 
-
 const deleteDataById = async (table, filter)=>{
     try {
       const rows = await prisma[table].delete(filter);
@@ -54,26 +52,20 @@ const deleteDataById = async (table, filter)=>{
     }
  }
 
-
 //add
-
-
-
 const addData = async (table, data)=>{
   try {
     return await prisma[table].create(data);
   } catch (error) {
+    getLogger().info("Error while inserting data");
     getLogger().error('Error', {
       error,
     });
-    throw error;
+   throw error;
   } finally {
     await prisma.$disconnect();
   }
 }
-
-
-
 
 
   module.exports={

@@ -1,5 +1,6 @@
 const { getLogger } = require('../core/logging');
 const {prisma, tables} = require('../data/index');
+import { useParams } from 'react-router-dom';
 
 const TABLE = tables.reviews
 /*     const reviews = await prisma

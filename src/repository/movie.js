@@ -18,6 +18,28 @@ const getAllReviewsForMovie = async (mid) => {
       movieId:mid
     }
   };
+
+  const filter2 = {
+    where:{
+      "userId_movieId":{
+        userId:uid,
+        movieId: mid
+      }
+    },
+    include: {
+      user: {
+        select: {
+          username: true,
+        },
+      },
+      movie:{
+        select:{
+          title: true,
+        }
+      }
+      
+    }
+  }
   return await dbData.getAllData(tables.reviews, filter);
 }
 
@@ -48,10 +70,21 @@ const getMovieGenre = async (mid)=> {
 
 const getById = async (id) => {
   const filter = {
-    where:{
+    where: {
       movieId: id
+    },
+    include: {
+      genreMovies: {
+        select: {
+          genre: {
+            select: {
+              genre: true
+            }
+          }
+        }
+      }
     }
-  }
+  };
   return await dbData.getDataById(TABLE, filter);
 
 }

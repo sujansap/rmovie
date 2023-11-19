@@ -20,7 +20,8 @@ const getAllReviewsForMovie = async (mid) => {
 
 const getById = async (id) => {
     const data = await movieRepository.getById(id);
-    return data;
+    data.genreMovies = data.genreMovies.map(item => item.genre.genre);
+    return {items: data, count:data.length};
 };
 
 const getMovieGeneres = async (mid) => {

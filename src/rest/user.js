@@ -22,6 +22,7 @@ const getAllReviewsForUser = async(ctx)=>{
 
 const getReviewForMovieForUser = async(ctx)=>{
     const data = await userService.getReviewForMovieForUser(Number(ctx.params.userId), Number(ctx.params.movieId)); 
+    console.log(data);
     ctx.body = data;
 }
 

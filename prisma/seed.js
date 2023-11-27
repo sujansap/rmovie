@@ -19,7 +19,7 @@ async function main() {
   await prisma.userTypes.deleteMany({});
 
   console.log("seeding the db....");
-/*  const userType1 = await prisma[TABLE_USERTYPES].create({
+  const userType1 = await prisma[TABLE_USERTYPES].create({
     data: {
       name: 'user',
     },
@@ -114,7 +114,7 @@ async function main() {
       review: 'Funny movie!',
     },
   });
-  */
+  
 }
 
 

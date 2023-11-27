@@ -19,7 +19,7 @@ const getAllReviewsForMovie = async (mid) => {
     }
   };
 
-  const filter2 = {
+  /*const filter2 = {
     where:{
       "userId_movieId":{
         userId:uid,
@@ -39,7 +39,7 @@ const getAllReviewsForMovie = async (mid) => {
       }
       
     }
-  }
+  }*/
   return await dbData.getAllData(tables.reviews, filter);
 }
 
@@ -164,7 +164,6 @@ const updateById = async (id, {title, user}) => {
   }
   
 }
-
 
 
 module.exports = {

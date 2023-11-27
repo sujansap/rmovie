@@ -112,6 +112,75 @@ describe('Movies', () => {
 
       // 👇 1
       beforeAll(async () => {
+
+        const toDeleteMovies = [];
+        //user does transaction at a place
+        //user does review for a movie
+
+        
+        await prisma[tables.userTypes].createMany({data:data.userTypes});
+        await prisma[tables.users].createMany({data:data.users});
+        await prisma[tables.genres].createMany({data:data.genres});
+        //await prisma[tables.movies].createMany({data:data.movies});
+        //await prisma[tables.reviews].createMany({data:data.reviews});
+        //await prisma[tables.movieGenres].createMany({data:data.genreMovies});
+      });
+  
+      // 👇 3
+      afterAll(async () => {
+        await prisma.tables.movies.delete({
+          where:{
+            movieId:{
+              in:{
+                toDeleteMovies
+              }
+            }
+          }
+        });
+  
+
+      });
+  
+      it('should 200 and return all transactions', async () => {
+        const response = await request.get(url);
+        expect(response.status).toBe(200);
+        console.log("the amout of items :" + response.body.items.length);
+        expect(response.body.items.length).toBe(2); 
+
+        expect(response.body.items).toEqual(
+          [
+            {
+              movieId: 1,
+              title: 'Avengers',
+              synopsis: 'This is a test movie.',
+              poster: 'testmovie.jpg',
+              userId: 1
+            },
+            {
+              movieId: 2,
+              title: 'Avengers 2',
+              synopsis: 'This is a second test movie.',
+              poster: 'testmovie2.jpg',
+              userId: 1,
+            },
+          ]
+   
+        );
+   
+     
+      
+
+
+      });
+    });
+
+
+
+
+    describe('POST /api/movies', () => {
+
+      // 👇 1
+      beforeAll(async () => {
         await prisma[tables.userTypes].createMany({data:data.userTypes});
         await prisma[tables.users].createMany({data:data.users});
         await prisma[tables.genres].createMany({data:data.genres});

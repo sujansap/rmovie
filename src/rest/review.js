@@ -52,6 +52,10 @@ module.exports = (app)=>{
         }
     );
 
+    //27/11 delete review kan van hier gebeuren, wij hebben alleen de review id nodig 
+    //voor update kan je ook gebruiken 
+    
+
     //geef alle reviews van een bepaalde gebruiker
     router.get('/users/:userId/movies/', getAllReviews);
     //geef een bepaalde review van een bepaalde gebruiker

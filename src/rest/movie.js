@@ -12,7 +12,7 @@ const getAllMovies = async(ctx)=>{
 
 const getMovieById = async(ctx)=>{
     const data = await movieService.getById(Number(ctx.params.id));
-    console.log(data.movieId) 
+    console.log(data) 
     console.log("test");
     ctx.body = data;
 }

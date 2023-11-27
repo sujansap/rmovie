@@ -18,21 +18,49 @@ const getReviewsForUser = async (uid)=>{
       userId:uid
     }
   };
+
+
+  
   
   return await dbData.getAllData(tables.reviews, filter);
 }
 
 const getReviewForMovieForUser = async (uid, mid)=>{
-  //there is no filter  //we just want all the data
-  filter = 
+  
+  const filter  = {
+    where:{
+      "userId_movieId":{
+        userId:uid,
+        movieId: mid
+      }
+    },
+    include: {
+      user: {
+        select: {
+          username: true,
+        },
+      },
+      movie:{
+        select:{
+          title: true,
+          poster:true
+        }
+      }
+      
+    }}
+
+  const filter2 = 
   {
     where: {
-    userId: uid, 
-    movieId: mid,
+    "userId_movieId":{
+      userId: uid, 
+      movieId: mid,
+    }
     }
  }
+
   
-  return await dbData.getAllData(tables.reviews, filter);
+  return await dbData.getDataById(tables.reviews, filter);
 }
 
 

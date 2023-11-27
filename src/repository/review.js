@@ -13,7 +13,6 @@ const TABLE = tables.reviews
 );
 */
 
-//get all reviews for a user
 const getAll = async (uid) => {
     try {
       const reviews = await prisma[TABLE]
@@ -98,6 +97,7 @@ const getFullReviewById = async (uid, mid) =>{
             movie:{
               select:{
                 title: true,
+                poster:true
               }
             }
             

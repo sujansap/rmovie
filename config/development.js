@@ -15,5 +15,13 @@ module.exports = {
       genres: 'TABLE_GENRES',
       genreMovies: 'TABLE_GENREMOVIES'
     },
+    auth: {
+      argon: {
+        saltLength: 16,
+        hashLength: 32,
+        timeCost: 6,
+        memoryCost: 2 ** 17,
+      },
+    },
   };
-  
+ 

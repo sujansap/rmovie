@@ -46,10 +46,11 @@ const addReview = async(uid, mid, review, rating)=>{
     const addedMovie = await movieRepository.addReview(uid, mid, review, rating);
     return addedMovie
 }
-
+/*
 const updateMovie = async (id, data)=>{
     return await movieRepository.updateById(id, data);
 }
+*/
 // de rest nog uitwerken
 
 module.exports = {
@@ -57,7 +58,7 @@ module.exports = {
     getById,
     deleteById,
     addMovie, 
-    updateMovie,
+   // updateMovie,
     getMovieGeneres,
     getAllReviewsForMovie,
     addReview

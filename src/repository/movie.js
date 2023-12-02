@@ -140,7 +140,7 @@ const addReview = async(uid, mid, review, rating)=>{
 }
 
 
-
+/*
 
 const updateById = async (id, {title, user}) => {
   try {
@@ -164,14 +164,14 @@ const updateById = async (id, {title, user}) => {
   }
   
 }
-
+*/
 
 module.exports = {
     getAll,
     getById,
     deleteById,
     addMovie,
-    updateById,
+   // updateById,
     getMovieGenre,
     getAllReviewsForMovie,
     addReview

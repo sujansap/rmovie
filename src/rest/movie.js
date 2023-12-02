@@ -64,14 +64,13 @@ const addReview = async(ctx)=>{
         Number(data.rating)
         );
 }
-
+/*
 const updateMovie = async(ctx)=>{
     const id = Number(ctx.params.id);
     const data = {...ctx.request.body};
    ctx.body = await movieService.updateMovie(id, data);
 }
-
-
+*/
 module.exports = (app)=>{
     const router = new Router (
         {prefix: '/movies'}
@@ -81,10 +80,10 @@ module.exports = (app)=>{
     router.get('/', getAllMovies);
     router.get('/:id', getMovieById);
     router.post('/', addMovie);
-    router.put('/:id', updateMovie);
+    //router.put('/:id', updateMovie);
     router.delete('/:id', deleteMovie);
     router.get('/:id/genres', getMovieGenres);
-    
+
     router.get('/:id/reviews', getAllReviewsForMovie);
     router.post('/:id/reviews', addReview);
 

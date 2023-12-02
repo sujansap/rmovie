@@ -23,8 +23,8 @@ const getFullReviewById = async (uid, mid) => {
  }
 
 
-const deleteById = async(uid, mid)=>{
-    return await reviewRepository.deleteById(uid, mid)
+const deleteById = async(rid)=>{
+    return await reviewRepository.deleteById(rid)
 }
 
 // de rest nog uitwerken

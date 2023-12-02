@@ -22,6 +22,12 @@ module.exports = {
         timeCost: 6,
         memoryCost: 2 ** 17,
       },
+      jwt: {
+        secret: 'eenveeltemoeilijksecretdatniemandooitzalradenandersisdesitegehacked',
+        expirationInterval: 60 * 60 * 1000, // ms (1 hour)
+        issuer: 'movieapp.be',
+        audience: 'movieapp.be',
+      },
     },
   };
  

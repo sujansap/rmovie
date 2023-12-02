@@ -1,3 +1,4 @@
+const { add } = require('winston');
 const { getLogger } = require('../core/logging');
 const {prisma, tables} = require('../data/index');
 const {addGenres} = require('./genre');
@@ -102,25 +103,24 @@ const deleteById = async (id)=>{
 
 
 // add moet nog in index
-const addMovie = async (movieTitle, user,poster, synopsis, genres)=>{
+const addMovie = async ({title, userId, poster, synopsis, genres})=>{
   //when you add a movie, you have to give genres, but genres are added to different table
   //for that reason we need to know the id of the movie row we just added into the db
   const movie={
     data:{
-      title:movieTitle,
-      userId:user,
-      poster:poster,
-      synopsis:synopsis
+      title,
+      userId,
+      poster,
+      synopsis
     }
   };
 
   const addedMovie = await dbData.addData(TABLE,movie);
   const id = addedMovie.movieId;
-  console.log("test genres------");
-  console.log(id);
+
   
   addGenres(id, genres);
-  return id;
+  return addedMovie;
   
 }
 

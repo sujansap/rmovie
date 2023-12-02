@@ -26,6 +26,12 @@ const getReviewForMovieForUser = async(ctx)=>{
     ctx.body = data;
 }
 
+const updateMovieReviewForUser = async(ctx)=>{
+    const uid = Number(ctx.params.userId);
+    const mid = Number(ctx.params.MovieId);
+    const data = {...ctx.request.body};
+   ctx.body = await userService.updateMovieReviewForUser(uid, mid, data);
+}
 
 
 module.exports = (app)=>{
@@ -38,6 +44,7 @@ module.exports = (app)=>{
     router.get('/:id/reviews', getAllReviewsForUser);
     router.get('/:userId/movies/:movieId/reviews', getReviewForMovieForUser);
     
+    router.put('/:userId/movies/:movieId/reviews', updateMovieReviewForUser)
     app.use(router.routes())
      .use(router.allowedMethods());
 }

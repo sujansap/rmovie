@@ -6,13 +6,13 @@ const TABLE = tables.users;
 
 const getAll = async ()=>{
   //there is no filter  //we just want all the data
-  filter = {};
+  const filter = {};
   return await dbData.getAllData(TABLE, filter);
 }
 
 const getReviewsForUser = async (uid)=>{
   //there is no filter  //we just want all the data
-  filter = 
+  const filter = 
   {
     where: {
       userId:uid
@@ -26,7 +26,7 @@ const getReviewsForUser = async (uid)=>{
 }
 
 const getReviewForMovieForUser = async (uid, mid)=>{
-  
+  //this will return the review with all the information needed
   const filter  = {
     where:{
       "userId_movieId":{
@@ -63,6 +63,21 @@ const getReviewForMovieForUser = async (uid, mid)=>{
   return await dbData.getDataById(tables.reviews, filter);
 }
 
+const updateMovieReviewForUser = async(uid, mid, data)=>{
+  const filter = {
+    where:{
+      "userId_movieId":{
+        userId:uid,
+        movieId: mid
+      }
+    },
+    data
+  }
+
+  return await prisma[tables.reviews].update(filter);
+
+}
+
 
 const getById = async (id) => {
   const filter = { where: {userId: id} };
@@ -73,6 +88,7 @@ module.exports={
     getAll,
     getById,
     getReviewsForUser,
-    getReviewForMovieForUser
+    getReviewForMovieForUser,
+    updateMovieReviewForUser
 }
 

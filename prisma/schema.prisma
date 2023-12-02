@@ -50,6 +50,7 @@ model movies {
 }
 
 model reviews {
+  reviewId Int    @id @default(autoincrement())
   userId  Int
   movieId Int
   rating  Int
@@ -58,7 +59,8 @@ model reviews {
   user    users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
   movie   movies   @relation(fields: [movieId], references: [movieId], onDelete: Cascade)
   //als een movie verwijdert wordt moeten alle reviews van een movie ook verwijderd worden
-  @@id([userId, movieId])
+ //@@id([userId, movieId])
+ @@unique([userId, movieId]) //defualt name userId_movieId
 }
 
 model genreMovies {

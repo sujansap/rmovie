@@ -1,5 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
-
+//yarn prisma db seed
 const config = require('config');
 const TABLE_USERS = config.get('database_tables.users');
 const TABLE_REVIEWS = config.get('database_tables.reviews');
@@ -7,6 +7,8 @@ const TABLE_MOVIES = config.get('database_tables.movies');
 const TABLE_USERTYPES = config.get('database_tables.usertypes');
 const TABLE_GENRES = config.get('database_tables.genres');
 const TABLE_MOVIEGENRES = "genreMovies";
+
+const Role = require("../src/core/roles");
 
 const prisma = new PrismaClient();
 
@@ -21,13 +23,13 @@ async function main() {
   console.log("seeding the db....");
   const userType1 = await prisma[TABLE_USERTYPES].create({
     data: {
-      name: 'user',
+      name: Role.USER,
     },
   });
 
   const userType2 = await prisma[TABLE_USERTYPES].create({
     data: {
-      name: 'admin',
+      name: Role.ADMIN,
     },
   });
 
@@ -36,7 +38,7 @@ async function main() {
     data: {
       username: 'Jan admin',
       email: 'janadmin@gmail.com',
-      password: 'password1',
+      password: '$argon2id$v=19$m=131072,t=6,p=4$7A7q0MvdTJ4pWSp/ZZjITw$EmMs3VBVuF5H9vMzsQiKWVYroKHG+j/WxjVmvjJIUmE',
       userTypeId: userType2.userTypeId,
     },
   });
@@ -45,7 +47,7 @@ async function main() {
     data: {
       username: 'user2',
       email: 'user2@example.com',
-      password: 'password2',
+      password: '$argon2id$v=19$m=131072,t=6,p=4$7A7q0MvdTJ4pWSp/ZZjITw$EmMs3VBVuF5H9vMzsQiKWVYroKHG+j/WxjVmvjJIUmE',
       userTypeId: userType2.userTypeId,
     },
   });
@@ -53,13 +55,13 @@ async function main() {
   // Create genres
   const genre1 = await prisma[TABLE_GENRES].create({
     data: {
-      genre: 'Action',
+      genre: 'action',
     },
   });
 
   const genre2 = await prisma[TABLE_GENRES].create({
     data: {
-      genre: 'Comedy',
+      genre: 'comedy',
     },
   });
 

@@ -33,18 +33,22 @@ const getAllReviewsForMovie= async(ctx)=>{
 }
 
 const deleteMovie = async(ctx)=>{
+    
     await movieService.deleteById(Number(ctx.params.id));
+
+    console.log("the movie has been deleted!!!");
     ctx.status = 204;
 }
 
 const addMovie = async(ctx)=>{
     const d = {...ctx.request.body};
-    console.log("under here");
-    console.log(d.genres)
+    
     //later the 1 needs to change to the user that is logged in at the moment of adding
 
-    await movieService.addMovie(d.title, 1,d.poster,d.synopsis, d.genres);
-    ctx.status = 204;
+    const addedMovie = await movieService.addMovie(d);
+    console.log(addedMovie)
+    ctx.status = 201;
+    ctx.body = addedMovie;
 }
 
 
@@ -64,7 +68,6 @@ const addReview = async(ctx)=>{
 const updateMovie = async(ctx)=>{
     const id = Number(ctx.params.id);
     const data = {...ctx.request.body};
-
    ctx.body = await movieService.updateMovie(id, data);
 }
 
@@ -81,8 +84,7 @@ module.exports = (app)=>{
     router.put('/:id', updateMovie);
     router.delete('/:id', deleteMovie);
     router.get('/:id/genres', getMovieGenres);
-
-
+    
     router.get('/:id/reviews', getAllReviewsForMovie);
     router.post('/:id/reviews', addReview);
 

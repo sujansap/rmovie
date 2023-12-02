@@ -44,6 +44,14 @@ const deleteReview = async(ctx)=>{
         );
     ctx.status = 204;
 }
+const deleteById = async(ctx)=>{
+
+    await reviewService.
+        deleteById(
+        Number(ctx.params.id)
+        );
+    ctx.status = 204;
+}
 
 module.exports = (app)=>{
     const router = new Router (
@@ -61,7 +69,7 @@ module.exports = (app)=>{
     //geef een bepaalde review van een bepaalde gebruiker
     router.get('/users/:userId/movies/:movieId', getFullReviewById);
     router.post('/users/:userId/movies/:movieId', addReview);
-    router.delete('/users/:userId/movies/:movieId', deleteReview);
+    router.delete('/:id', deleteReview);
     app.use(router.routes())
      .use(router.allowedMethods());
 }

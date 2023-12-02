@@ -40,8 +40,9 @@ const getDataById = async (table, filter) => {
 const deleteDataById = async (table, filter)=>{
     try {
       const rows = await prisma[table].delete(filter);
-      const aantal = Object.keys(rows);
-      return aantal>0
+    
+      console.log(rows);
+      return rows
     } catch (error) {
       getLogger().error('Error', {
         error,

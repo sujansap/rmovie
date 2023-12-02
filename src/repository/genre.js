@@ -19,6 +19,7 @@ const getGenreId = async (g) => {
       }
     };
     const genre = await dbData.getDataById(TABLE, filter);
+
     return genre.genreId;
 }
 

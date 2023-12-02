@@ -38,8 +38,8 @@ const deleteById = async (id) => {
     }
 };
 
-const addMovie = async(title, user,poster,synopsis,genres) =>{
-    await movieRepository.addMovie(title, user,poster, synopsis, genres);
+const addMovie = async({title, poster,synopsis,genres}) =>{
+    return await movieRepository.addMovie({title, userId: 1,poster, synopsis, genres});
 }
 
 const addReview = async(uid, mid, review, rating)=>{

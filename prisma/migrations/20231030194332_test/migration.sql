@@ -35,12 +35,14 @@ CREATE TABLE `movies` (
 
 -- CreateTable
 CREATE TABLE `reviews` (
+    `reviewId` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
     `movieId` INTEGER NOT NULL,
     `rating` INTEGER NOT NULL,
     `review` VARCHAR(191) NOT NULL,
 
-    PRIMARY KEY (`userId`, `movieId`)
+    PRIMARY KEY (`reviewId`)
+    
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable

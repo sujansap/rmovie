@@ -30,9 +30,14 @@ const getReviewForMovieForUser = async (uid, mid) => {
     return { items:data, count: 1 }
 };
 
+
+const updateMovieReviewForUser = async(uid, mid, data)=>{
+   return await userRepository.updateMovieReviewForUser(uid, mid, data);
+}
 module.exports = {
     getAll,
     getById,
     getReviewsForUser,
-    getReviewForMovieForUser
+    getReviewForMovieForUser,
+    updateMovieReviewForUser
 }; 

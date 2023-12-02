@@ -12,9 +12,8 @@ module.exports = {
       reviews: 'TABLE_REVIEWS',
       movies: 'TABLE_MOVIES',
       usertypes: 'TABLE_USERTYPES',
-      genreMovies: 'TABLE_GENREMOVIES',
       genres: 'TABLE_GENRES',
-   
+      genreMovies: 'TABLE_GENREMOVIES'
     },
     auth: {
       argon: {
@@ -22,6 +21,12 @@ module.exports = {
         hashLength: 32,
         timeCost: 6,
         memoryCost: 2 ** 17,
+      },
+      jwt: {
+        secret: 'eenveeltemoeilijksecretdatniemandooitzalradenandersisdesitegehacked',
+        expirationInterval: 60 * 60 * 1000, // ms (1 hour)
+        issuer: 'movieapp.be',
+        audience: 'movieapp.be',
       },
     },
   };

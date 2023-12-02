@@ -1,6 +1,6 @@
 const { getLogger } = require('../core/logging');
 const {prisma, tables} = require('../data/index');
-
+const dbData = require('./index'); 
 
 const TABLE = tables.reviews
 /*     const reviews = await prisma
@@ -54,7 +54,24 @@ const getById = async (uid, mid) => {
     }
 }
 
-const deleteById = async (uid, mid)=>{
+const deleteById = async (rid)=>{
+  /*const filter = {
+    where:{
+      "userId_movieId":{
+        userId:uid,
+        movieId: mid
+      }
+    }
+
+  }*/
+  const filter = {
+    where:{
+      reviewId: rid
+    }
+  }
+  return await dbData.deleteDataById(tables.reviews, filter);
+
+  /*
   try {
     const rows = await prisma[TABLE].delete({
       where:{
@@ -75,6 +92,8 @@ const deleteById = async (uid, mid)=>{
   } finally {
     await prisma.$disconnect();
   }
+  */
+
 }
 
 //get the full review of a movie for a user

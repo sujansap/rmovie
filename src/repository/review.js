@@ -1,8 +1,8 @@
-const { getLogger } = require('../core/logging');
-const {prisma, tables} = require('../data/index');
-const dbData = require('./index'); 
+const { getLogger } = require("../core/logging");
+const { prisma, tables } = require("../data/index");
+const dbData = require("./index");
 
-const TABLE = tables.reviews
+const TABLE = tables.reviews;
 /*     const reviews = await prisma
 .watchedMovies
 .findMany({
@@ -14,47 +14,58 @@ const TABLE = tables.reviews
 */
 
 const getAll = async (uid) => {
-    try {
-      const reviews = await prisma[TABLE]
-          .findMany({
-            where: {
-              userId:uid
-            }
-          });
-      return reviews
-    } catch (error) {
-      getLogger().error('Error', {
-        error,
-      });
-      throw error;
-    } finally {
-      await prisma.$disconnect();
-    }
-}
+  /*
+  const filter = {
+    where: {
+      userId: uid,
+    },
 
-//get a review for a user for a movie
-const getById = async (uid, mid) => {
-    try {
-        const review = await prisma[TABLE]
-            .findMany({
-                    where: {
-                    userId: uid, 
-                    movieId: mid,
-                    },
-                 }
-            );
-      return review
-    } catch (error) {
-      getLogger().error('Error', {
-        error,
-      });
-      throw error;
-    } finally {
-      await prisma.$disconnect();
-    }
-}
+    include: {
+      movie: {
+        select: {
+          movieId: true,
+          title: true,
+          poster: true,
+        },
+      },
+    },
+  };*/
 
-const deleteById = async (rid)=>{
+  const filter = {
+    where: {
+      userId: uid,
+    },
+    select: {
+      movie: {
+        select: {
+          movieId: true,
+          title: true,
+          poster: true,
+        },
+      },
+    },
+  };
+  return await dbData.getAllData(TABLE, filter);
+  /*
+  try {
+    const reviews = await prisma[TABLE].findMany({
+      where: {
+        userId: uid,
+      },
+    });
+    return reviews;
+  } catch (error) {
+    getLogger().error("Error", {
+      error,
+    });
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+  */
+};
+
+const deleteById = async (rid) => {
   /*const filter = {
     where:{
       "userId_movieId":{
@@ -65,104 +76,75 @@ const deleteById = async (rid)=>{
 
   }*/
   const filter = {
-    where:{
-      reviewId: rid
-    }
-  }
+    where: {
+      reviewId: rid,
+    },
+  };
   return await dbData.deleteDataById(tables.reviews, filter);
+};
 
-  /*
+//get the full review of a movie for a user
+const getById = async (rid) => {
   try {
-    const rows = await prisma[TABLE].delete({
-      where:{
-        "userId_movieId":{
-          userId:uid,
-          movieId: mid
-        }
-      }
+    const review = await prisma[TABLE].findUnique({
+      where: {
+        reviewId: rid,
+      },
+      include: {
+        user: {
+          select: {
+            username: true,
+          },
+        },
+        movie: {
+          select: {
+            title: true,
+            poster: true,
+          },
+        },
+      },
     });
-
-    return rows>0
+    console.log("test---");
+    return review;
   } catch (error) {
-  
-    getLogger().error('Error', {
+    getLogger().error("Error", {
       error,
     });
     throw error;
   } finally {
     await prisma.$disconnect();
   }
-  */
-
-}
-
-//get the full review of a movie for a user
-const getFullReviewById = async (uid, mid) =>{
-  try {
-    const review = await prisma[TABLE]
-        .findUnique({
-          where:{
-            "userId_movieId":{
-              userId:uid,
-              movieId: mid
-            }
-          },
-          include: {
-            user: {
-              select: {
-                username: true,
-              },
-            },
-            movie:{
-              select:{
-                title: true,
-                poster:true
-              }
-            }
-            
-          }
-        }
-        );
-  console.log("test---");
-  return review
-} catch (error) {
-  getLogger().error('Error', {
-    error,
-  });
-  throw error;
-} finally {
-  await prisma.$disconnect();
-}
-}
+};
 
 //add a review for a movie for a user
-const add = async(uid, mid, review, rating)=>{
-  try {
-    const reviewedMovie = await prisma[TABLE].create(
-      {
-        data:{
-          userId:uid,
-          movieId:mid,
-          review:review,
-          rating:rating
-        }
-      }
-    );
-    return reviewedMovie
-  } catch (error) {
-    getLogger().error('error with adding', {
-      error,
-    });
-    throw error;
-  } finally{
-    await prisma.$disconnect();
-  }
-}
+const add = async (uid, mid, review, rating) => {
+  const dataReview = {
+    data: {
+      userId: uid,
+      movieId: mid,
+      review: review,
+      rating: rating,
+    },
+  };
+
+  return await dbData.addData(tables.reviews, dataReview);
+};
+
+const updateReview = async (rid, data) => {
+  const filter = {
+    where: {
+      reviewId: rid,
+    },
+    data,
+  };
+
+  return await prisma[tables.reviews].update(filter);
+};
 
 module.exports = {
-    getAll,
-    getById, 
-    add,
-    deleteById,
-    getFullReviewById
-}
+  getAll,
+  getById,
+  add,
+  deleteById,
+  updateReview,
+};

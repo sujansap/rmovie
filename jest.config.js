@@ -8,6 +8,13 @@ const config = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
+  collectCoverageFrom: [
+    "./src/repository/**/*.js",
+    "./src/service/**/*.js",
+    "./src/rest/**/*.js",
+  ],
+  coverageDirectory: "__tests__/coverage",
+
   // Stop running tests after `n` failures
   // bail: 0,
 
@@ -154,12 +161,9 @@ const config = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  
-    testMatch: [
-      "**/__tests__/**/?(*.)+(spec|test).[jt]s?(x)",
-    ],
-  
-  
+
+  testMatch: ["**/__tests__/**/?(*.)+(spec|test).[jt]s?(x)"],
+
   // testMatch: [
   //   "**/__tests__/**/*.[jt]s?(x)",
   //   "**/?(*.)+(spec|test).[tj]s?(x)"

@@ -19,10 +19,10 @@ function messWithPayload(jwt) {
 async function main() {
   const fakeUser = {
     id: 1,
-    firstName: 'Thomas',
-    lastName: 'Aelbrecht',
+    username:"usertest123",
     email: 'thomas.aelbrecht@hogent.be',
-    roles: ['user'],
+    about: "this is a user", 
+    roles: "user",
   };
 
   const jwt = await generateJWT(fakeUser);

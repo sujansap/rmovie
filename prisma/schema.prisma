@@ -23,7 +23,7 @@ model users {
   userId     Int       @id @default(autoincrement())
   username   String    @unique
   email      String    @unique
-  password   String
+  password   String    @db.LongText
   about      String?   @db.LongText
   userTypeId Int
 

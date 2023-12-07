@@ -1,38 +1,69 @@
 //let { MOVIES, REVIEWS } = require('../data/mock_data');
-const c = require('config');
-const reviewRepository = require('../repository/review');
+const c = require("config");
+const reviewRepository = require("../repository/review");
+const ServiceError = require("../core/serviceError");
+const handleDBError = require("./_handleDBError");
 
 const getAll = async (uid) => {
-    const data  = await reviewRepository.getAll(uid);
-    return { items: data, count: data.length };
+  let data = await reviewRepository.getAll(uid);
+  data = data.map((d) => {
+    return { ...d.movie };
+  });
+  console.log(data);
+  return { items: data, count: data.length };
 };
 
-const getById = async (uid, mid) => {
-    const data = await reviewRepository.getById(uid, mid);
-    return data;
+const getById = async (rid) => {
+  const data = await reviewRepository.getById(rid);
+
+  if (!data) {
+    throw ServiceError.notFound(
+      `No review with for ${mid} exists for this user ${uid}`,
+      { mid, uid }
+    );
+  }
+  return data;
 };
 
-const getFullReviewById = async (uid, mid) => {
-    const data = await reviewRepository.getFullReviewById(uid, mid);
-    return data
+const add = async (uid, mid, review, rating) => {
+  let addedReview;
+  try {
+    addedReview = await reviewRepository.add(uid, mid, review, rating);
+  } catch (error) {
+    throw handleDBError(error);
+  }
+  return addedReview;
 };
 
- const add = async(uid, mid, review, rating)=>{
-    const addedMovie = await reviewRepository.add(uid, mid, review, rating);
-    return addedMovie
- }
+const deleteById = async (rid) => {
+  try {
+    const deleted = await reviewRepository.deleteById(rid);
+    if (!deleted) {
+      throw Error(`No movie with id ${id} exists`, { id });
+    }
+  } catch (error) {
+    throw handleDBError(error);
+  }
+};
 
+const updateReview = async (rid, data) => {
+  try {
+    const updated = await reviewRepository.updateReview(rid, data);
 
-const deleteById = async(rid)=>{
-    return await reviewRepository.deleteById(rid)
-}
-
+    if (!updated) {
+      throw Error(`No movie with id ${id} exists`, { id });
+    }
+    return updated;
+  } catch (error) {
+    throw handleDBError(error);
+  }
+};
 // de rest nog uitwerken
 
 module.exports = {
-    getAll,
-    getById,
-    add,
-    deleteById,
-    getFullReviewById
-}; 
+  getAll,
+  getById,
+  add,
+  deleteById,
+  updateReview,
+};

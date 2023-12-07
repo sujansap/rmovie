@@ -5,8 +5,6 @@ const getAll = async () => {
     return { items: data, count: data.length };
 };
 
-
 module.exports = {
     getAll,
-
 }; 

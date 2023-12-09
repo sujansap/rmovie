@@ -32,6 +32,7 @@ const getAllReviewsForMovie = async (mid) => {
       movie: {
         select: {
           title: true,
+          poster: true,
         },
       },
     },
@@ -130,7 +131,8 @@ const addMovie = async ({ title, userId, poster, synopsis, genres }) => {
   const addedMovie = await dbData.addData(TABLE, movie);
   const id = addedMovie.movieId;
 
-  addGenres(id, genres);
+  const addedGenres = await addGenres(id, genres);
+
   return addedMovie;
 };
 

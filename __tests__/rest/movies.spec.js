@@ -1,8 +1,9 @@
 const supertest = require("supertest");
-const createServer = require("../../src/createServer");
+
 const { tables } = require("../../src/data/index");
-//const movie = require("../../src/rest/movie");
-//    //"test:with-migrate": "yarn test:prisma:migrate && yarn test:prisma:seed && yarn test:coverage"
+
+const { withServer, login } = require("../supertest.setup");
+const { testAuthHeader } = require("../common/auth");
 
 const data = {
   userTypes: [
@@ -57,14 +58,16 @@ const data = {
   ],
   reviews: [
     {
+      reviewId: 1,
       userId: 1,
-      movieId: 7,
+      movieId: 1,
       rating: 100,
       review: "Great movie!",
     },
     {
+      reviewId: 2,
       userId: 2,
-      movieId: 7,
+      movieId: 1,
       rating: 100,
       review: "this movie is amazing",
     },
@@ -72,15 +75,11 @@ const data = {
   genreMovies: [
     {
       genreId: 1,
-      movieId: 5,
+      movieId: 1,
     },
     {
       genreId: 2,
-      movieId: 5,
-    },
-    {
-      genreId: 2,
-      movieId: 6,
+      movieId: 1,
     },
   ],
 };
@@ -92,29 +91,23 @@ const dataToDelete = {
   genreMovies: [1, 2],
 };
 describe("Movies", () => {
-  let server;
   let request;
   let prisma;
+  let authHeader;
+
+  withServer(({ supertest, prisma: p }) => {
+    request = supertest;
+    prisma = p;
+  });
 
   beforeAll(async () => {
-    server = await createServer();
-    request = supertest(server.getApp().callback());
-    prisma = getPrimsa();
-    await prisma[tables.userTypes].createMany({ data: data.userTypes });
-    await prisma[tables.genres].createMany({ data: data.genres });
+    authHeader = await login(request); // 👈 3
   });
 
-  afterAll(async () => {
-    await server.stop();
-  });
-
-  const url = "/api/movies/";
+  const url = "/api/movies";
   describe("GET /api/movies", () => {
     beforeAll(async () => {
-      await prisma[tables.users].createMany({ data: data.users });
       await prisma[tables.movies].createMany({ data: data.movies });
-      //await prisma[tables.reviews].createMany({data:data.reviews});
-      //await prisma[tables.movieGenres].createMany({data:data.genreMovies});
     });
 
     afterAll(async () => {
@@ -125,18 +118,10 @@ describe("Movies", () => {
           },
         },
       });
-
-      /*await prisma[tables.users].deleteMany({
-          where:{
-            userId:{
-              in: dataToDelete.users
-            }
-          }
-        });*/
     });
 
     it("should 200 and return all movies", async () => {
-      const response = await request.get(url);
+      const response = await request.get(url).set("Authorization", authHeader);
       expect(response.status).toBe(200);
       console.log("the amout of items :" + response.body.items.length);
       expect(response.body.items.length).toBe(2);
@@ -158,14 +143,23 @@ describe("Movies", () => {
         },
       ]);
     });
+
+    it("should 400 when given an argument", async () => {
+      const response = await request
+        .get(`${url}?invalid=true`)
+        .set("Authorization", authHeader);
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe("VALIDATION_FAILED");
+      expect(response.body.details.query).toHaveProperty("invalid");
+    });
+
+    testAuthHeader(() => request.get(url));
   });
 
   describe("GET /api/movies/:id", () => {
     beforeAll(async () => {
-      //await prisma[tables.users].createMany({data:data.users});
       await prisma[tables.movies].createMany({ data: data.movies });
-      //await prisma[tables.reviews].createMany({data:data.reviews});
-      //await prisma[tables.movieGenres].createMany({data:data.genreMovies});
     });
 
     afterAll(async () => {
@@ -179,7 +173,10 @@ describe("Movies", () => {
     });
 
     it("should 200 and return the movie", async () => {
-      const response = await request.get(`${url}1`);
+      const response = await request
+        .get(`${url}/1`)
+        .set("Authorization", authHeader);
+
       expect(response.status).toBe(200);
 
       expect(response.body.items).toEqual({
@@ -191,12 +188,36 @@ describe("Movies", () => {
         genreMovies: [],
       });
     });
+
+    it("should 404 when requesting not existing movie", async () => {
+      const response = await request
+        .get(`${url}/3`)
+        .set("Authorization", authHeader);
+
+      expect(response.statusCode).toBe(404);
+      expect(response.body).toMatchObject({
+        code: "NOT_FOUND",
+        message: "No movie with id 3 exists",
+        details: {
+          mid: 3,
+        },
+      });
+      expect(response.body.stack).toBeTruthy();
+    });
+
+    it("should 400 when given an argument", async () => {
+      const response = await request
+        .get(`${url}/1?invalid=true`)
+        .set("Authorization", authHeader);
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe("VALIDATION_FAILED");
+      expect(response.body.details.query).toHaveProperty("invalid");
+    });
   });
 
   describe("GET /api/movies/:id/genres", () => {
-    const toDeleteMovies = [5, 6];
     beforeAll(async () => {
-      //await prisma[tables.users].createMany({data:data.users});
       await prisma[tables.movies].createMany({ data: data.movies });
       //await prisma[tables.reviews].createMany({data:data.reviews});
       await prisma[tables.movieGenres].createMany({ data: data.genreMovies });
@@ -206,42 +227,87 @@ describe("Movies", () => {
       await prisma[tables.movies].deleteMany({
         where: {
           movieId: {
-            in: toDeleteMovies,
+            in: dataToDelete.movies,
           },
         },
       });
     });
 
     it("should 200 and return all the movie genres", async () => {
-      const response = await request.get(`${url}1/genres`);
+      const response = await request
+        .get(`${url}/1/genres`)
+        .set("Authorization", authHeader);
+
       expect(response.status).toBe(200);
 
       expect(response.body).toEqual(["action", "comedy"]);
     });
+
+    it("should 400 when given an argument", async () => {
+      const response = await request
+        .get(`${url}/1/genres?invalid=true`)
+        .set("Authorization", authHeader);
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe("VALIDATION_FAILED");
+      expect(response.body.details.query).toHaveProperty("invalid");
+    });
+
+    it("should 404 when requesting genres for movies that don't have it", async () => {
+      const response = await request
+        .get(`${url}/2/genres`)
+        .set("Authorization", authHeader);
+
+      expect(response.statusCode).toBe(404);
+      expect(response.body).toMatchObject({
+        code: "NOT_FOUND",
+        message: "No genres for movie with id 2 exist",
+        details: {
+          mid: 2,
+        },
+      });
+      expect(response.body.stack).toBeTruthy();
+    });
+
+    it("should 404 when requesting not existing movie", async () => {
+      const response = await request
+        .get(`${url}/3`)
+        .set("Authorization", authHeader);
+
+      expect(response.statusCode).toBe(404);
+      expect(response.body).toMatchObject({
+        code: "NOT_FOUND",
+        message: "No movie with id 3 exists",
+        details: {
+          mid: 3,
+        },
+      });
+      expect(response.body.stack).toBeTruthy();
+    });
   });
 
-  //all reviews for a movie
   describe("GET /api/movies/:id/reviews", () => {
-    const toDeleteMovies = [7, 8];
     beforeAll(async () => {
-      //await prisma[tables.users].createMany({data:data.users});
       await prisma[tables.movies].createMany({ data: data.movies });
-      await prisma[tables.reviews].createMany({ data: data.reviews });
-      //await prisma[tables.movieGenres].createMany({data:data.genreMovies});
+      await prisma[tables.reviews].createMany({
+        data: data.reviews,
+      });
     });
 
     afterAll(async () => {
       await prisma[tables.movies].deleteMany({
         where: {
           movieId: {
-            in: toDeleteMovies,
+            in: dataToDelete.movies,
           },
         },
       });
     });
 
-    it("should 200 and return the movie", async () => {
-      const response = await request.get(`${url}7/reviews`);
+    it("should 200 and return all the reviews for the movie", async () => {
+      const response = await request
+        .get(`${url}/1/reviews`)
+        .set("Authorization", authHeader);
       expect(response.status).toBe(200);
 
       const removeDate = (response) => {
@@ -251,63 +317,249 @@ describe("Movies", () => {
       expect(removeDate(response.body.items)).toEqual([
         {
           movie: "Avengers",
-          movieId: 7,
+          movieId: 1,
           rating: 100,
+          poster: "testmovie.jpg",
           review: "Great movie!",
           reviewId: 1,
-          user: "janmap",
+          user: "Test_User",
           userId: 1,
         },
         {
           movie: "Avengers",
-          movieId: 7,
+          movieId: 1,
           rating: 100,
+          poster: "testmovie.jpg",
           review: "this movie is amazing",
           reviewId: 2,
-          user: "jan2map",
+          user: "Admin_User",
           userId: 2,
         },
       ]);
     });
+
+    it("should 404 when requesting not existing review", async () => {
+      const response = await request
+        .get(`${url}/2/reviews`)
+        .set("Authorization", authHeader);
+
+      expect(response.statusCode).toBe(404);
+      expect(response.body).toMatchObject({
+        code: "NOT_FOUND",
+        message: "No reviews for movie with id 2 exist",
+        details: {
+          mid: 2,
+        },
+      });
+      expect(response.body.stack).toBeTruthy();
+    });
+
+    it("should 400 when given an argument", async () => {
+      const response = await request
+        .get(`${url}/1/reviews?invalid=true`)
+        .set("Authorization", authHeader);
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe("VALIDATION_FAILED");
+      expect(response.body.details.query).toHaveProperty("invalid");
+    });
+
+    testAuthHeader(() => request.get(`${url}/1/reviews`));
   });
 
-  describe("POST /api/movies", () => {
-    let toDelete = 0;
+  describe("GET /api/movies/:id/review", () => {
     beforeAll(async () => {
-      //await prisma[tables.users].createMany({data:data.users});
+      await prisma[tables.movies].createMany({ data: data.movies });
+      await prisma[tables.reviews].createMany({
+        data: data.reviews,
+      });
     });
 
     afterAll(async () => {
-      //test
+      await prisma[tables.movies].deleteMany({
+        where: {
+          movieId: {
+            in: dataToDelete.movies,
+          },
+        },
+      });
+    });
+
+    it("should 200 and return the review for the movie for the logged in user", async () => {
+      const response = await request
+        .get(`${url}/1/review`)
+        .set("Authorization", authHeader);
+      expect(response.status).toBe(200);
+
+      const removeDate = (response) => {
+        delete response.date;
+
+        return response;
+      };
+      expect(removeDate(response.body.items)).toEqual({
+        //date: "2023-12-09T11:26:33.802Z",
+        movieId: 1,
+        poster: "testmovie.jpg",
+        rating: 100,
+        review: "Great movie!",
+        reviewId: 1,
+        title: "Avengers",
+        userId: 1,
+        username: "Test_User",
+      });
+    });
+
+    it("should 404 when requesting not existing review", async () => {
+      const response = await request
+        .get(`${url}/2/review`)
+        .set("Authorization", authHeader);
+
+      expect(response.statusCode).toBe(404);
+      expect(response.body).toMatchObject({
+        code: "NOT_FOUND",
+        message: "No review for movie with id 2 exists for the user with id 1",
+        details: {
+          mid: 2,
+          uid: 1,
+        },
+      });
+      expect(response.body.stack).toBeTruthy();
+    });
+
+    it("should 400 when given an argument", async () => {
+      const response = await request
+        .get(`${url}/1/review?invalid=true`)
+        .set("Authorization", authHeader);
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe("VALIDATION_FAILED");
+      expect(response.body.details.query).toHaveProperty("invalid");
+    });
+
+    testAuthHeader(() => request.get(`${url}/1/review`));
+  });
+
+  describe("POST /api/movies", () => {
+    let toDeleteMovie = 0;
+    beforeAll(async () => {});
+
+    afterAll(async () => {
+      console.log(toDeleteMovie);
+
+      await prisma[tables.movies].delete({
+        where: {
+          movieId: toDeleteMovie,
+        },
+      });
     });
 
     it("it should have posted movie", async () => {
-      const response = await request.post(url).send({
-        title: "Avengers",
-        synopsis: "This is a test movie created to test.",
-        poster: "testmovie.jpg",
-        userId: 1,
-        genres: ["action", "comedy"],
-      });
+      const response = await request
+        .post(url)
+        .set("Authorization", authHeader)
+        .send({
+          title: "Avengers",
+          synopsis: "This is a test movie created to test.",
+          poster: "https://img.fruugo.com/product/7/41/14532417_max.jpg",
+          genres: ["action", "comedy"],
+        });
 
-      console.log(response.body);
-
-      toDelete = response.body.movieId;
-
+      toDeleteMovie = response.body.movieId;
+      //console.log(toDelete);
       expect(response.status).toBe(201);
       expect(response.body.movieId).toBeTruthy();
       expect(response.body.title).toBe("Avengers");
       expect(response.body.synopsis).toBe(
         "This is a test movie created to test."
       );
-      expect(response.body.poster).toBe("testmovie.jpg");
+      expect(response.body.poster).toBe(
+        "https://img.fruugo.com/product/7/41/14532417_max.jpg"
+      );
       expect(response.body.userId).toBe(1);
     });
+
+    it("should 500 when genre doesn't exist", async () => {
+      const response = await request
+        .post(url)
+        .set("Authorization", authHeader)
+        .send({
+          title: "Avengers",
+          synopsis: "This is a test movie created to test.",
+          poster: "https://img.fruugo.com/product/7/41/14532417_max.jpg",
+          genres: ["invalid"],
+        });
+
+      expect(response.statusCode).toBe(500);
+      expect(response.body.code).toBe("INTERNAL_SERVER_ERROR");
+      //expect(response.body.details.body).toHaveProperty("genre");
+    });
+
+    it("should 400 when missing title", async () => {
+      const response = await request
+        .post(url)
+        .set("Authorization", authHeader)
+        .send({
+          synopsis: "This is a test movie created to test.",
+          poster: "https://img.fruugo.com/product/7/41/14532417_max.jpg",
+          genres: ["action", "comedy"],
+        });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe("VALIDATION_FAILED");
+      expect(response.body.details.body).toHaveProperty("title");
+    });
+
+    it("should 400 when missing synopsis", async () => {
+      const response = await request
+        .post(url)
+        .set("Authorization", authHeader)
+        .send({
+          title: "Avengers",
+          poster: "https://img.fruugo.com/product/7/41/14532417_max.jpg",
+          genres: ["action", "comedy"],
+        });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe("VALIDATION_FAILED");
+      expect(response.body.details.body).toHaveProperty("synopsis");
+    });
+
+    it("should 400 when missing poster", async () => {
+      const response = await request
+        .post(url)
+        .set("Authorization", authHeader)
+        .send({
+          title: "Avengers",
+          synopsis: "This is a test movie created to test.",
+          genres: ["action", "comedy"],
+        });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe("VALIDATION_FAILED");
+      expect(response.body.details.body).toHaveProperty("poster");
+    });
+
+    it("should 400 when missing genres", async () => {
+      const response = await request
+        .post(url)
+        .set("Authorization", authHeader)
+        .send({
+          title: "Avengers",
+          synopsis: "This is a test movie created to test.",
+          poster: "https://img.fruugo.com/product/7/41/14532417_max.jpg",
+        });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe("VALIDATION_FAILED");
+      expect(response.body.details.body).toHaveProperty("genres");
+    });
+
+    testAuthHeader(() => request.post(url));
   });
 
   describe("DELETE /api/movies/:id", () => {
     beforeAll(async () => {
-      await prisma[tables.movies].createMany({ data: data.movies });
+      await prisma[tables.movies].createMany({ data: data.movies[0] });
     });
 
     afterAll(async () => {
@@ -315,10 +567,30 @@ describe("Movies", () => {
     });
 
     it("should 204 and return nothing", async () => {
-      const response = await request.delete(`${url}10`);
+      const response = await request
+        .delete(`${url}/1`)
+        .set("Authorization", authHeader);
       //console.log(response);
       expect(response.statusCode).toBe(204);
       expect(response.body).toEqual({});
     });
+
+    it("should 404 with not existing movie", async () => {
+      const response = await request
+        .delete(`${url}/4`)
+        .set("Authorization", authHeader);
+
+      expect(response.statusCode).toBe(404);
+      expect(response.body).toMatchObject({
+        code: "NOT_FOUND",
+        message: "No movie with id 4 exists",
+        details: {
+          id: 4,
+        },
+      });
+      expect(response.body.stack).toBeTruthy();
+    });
   });
+
+  testAuthHeader(() => request.delete(`${url}/1`));
 });

@@ -10,18 +10,21 @@ const getAll = async () => {
 
 const getAllReviewsForMovie = async (mid) => {
   let data = await movieRepository.getAllReviewsForMovie(mid);
-
+  console.log("what happend here!!!!!!!!");
+  console.log(!data);
+  console.log(data);
+  if (data.length === 0 || data[0].movieId !== mid) {
+    throw ServiceError.notFound(`No reviews for movie with id ${mid} exist`, {
+      mid,
+    });
+  }
   data = data.map((d) => {
+    d.poster = d.movie.poster;
     d.movie = d.movie.title;
     d.user = d.user.username;
 
     return d;
   });
-  if (!data || data.movieId !== mid) {
-    throw ServiceError.notFound(`No reviews for movie with id ${mid} exists`, {
-      mid,
-    });
-  }
 
   return { items: data, count: data.length };
 };
@@ -37,23 +40,24 @@ const getById = async (mid) => {
 };
 
 const getMovieGeneres = async (mid) => {
-  const data = await movieRepository.getMovieGenre(mid);
+  let data = await movieRepository.getMovieGenre(mid);
+  data = data.genreMovies.map((item) => item.genre.genre);
 
-  if (!data || data.movieId !== mid) {
-    throw ServiceError.notFound(`No genres, no movie with id ${mid} exists`, {
+  if (data.length == 0) {
+    throw ServiceError.notFound(`No genres for movie with id ${mid} exist`, {
       mid,
     });
   }
 
-  return data.genreMovies.map((item) => item.genre.genre);
+  return data;
 };
 
 const deleteById = async (id) => {
   try {
     const deleted = await movieRepository.deleteById(id);
 
-    if (!deleted) {
-      throw Error(`No movie with id ${id} exists`, { id });
+    if (deleted.count === 0) {
+      throw ServiceError.notFound(`No movie with id ${id} exists`, { id });
     }
   } catch (error) {
     throw handleDBError(error);
@@ -67,12 +71,7 @@ const addMovie = async (data) => {
     throw handleDBError(error);
   }
 };
-/*
-const addReview = async(uid, mid, review, rating)=>{
-    const addedMovie = await movieRepository.addReview(uid, mid, review, rating);
-    return addedMovie
-}
-*/
+
 /*
 const updateMovie = async (id, data)=>{
     return await movieRepository.updateById(id, data);
@@ -83,12 +82,12 @@ const updateMovie = async (id, data)=>{
 const getReviewForMovie = async (uid, mid) => {
   const data = await movieRepository.getReviewForMovie(uid, mid);
   if (!data) {
-    console.log("something went wrong.");
-    return { items: {}, count: 0 };
+    throw ServiceError.notFound(
+      `No review for movie with id ${mid} exists for the user with id ${uid}`,
+      { mid, uid }
+    );
   }
 
-  console.log("------test-----");
-  console.log(data);
   data.title = data.movie.title;
   data.poster = data.movie.poster;
   data.username = data.user.username;
@@ -96,7 +95,7 @@ const getReviewForMovie = async (uid, mid) => {
   delete data.movie;
 
   //wat als er de user nog geen review heeft gemaakt voor een movie
-  return { items: data, count: 1 };
+  return { items: data };
 };
 
 module.exports = {

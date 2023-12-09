@@ -61,7 +61,7 @@ deleteMovie.validationScheme = {
 const addMovie = async (ctx) => {
   console.log("someone is trying to add a movie");
   console.log({ ...ctx.request.body });
-  const userId = 1;
+  const userId = ctx.state.session.userId;
   const d = { ...ctx.request.body, userId };
 
   //laer the 1 needs to change to the user that is loggedt in at the moment of adding
@@ -76,7 +76,7 @@ addMovie.validationScheme = {
     title: Joi.string().required(),
     poster: Joi.string().uri().required(),
     synopsis: Joi.string().required(),
-    genres: Joi.string().required(),
+    genres: Joi.array().items(Joi.string()).required(),
   },
 };
 

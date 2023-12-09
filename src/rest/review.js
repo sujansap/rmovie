@@ -22,9 +22,9 @@ const getById = async (ctx) => {
   ctx.body = await reviewService.getById(Number(ctx.params.id));
 };
 getById.validate = {
-  params: Joi.object({
+  params: {
     id: Joi.number().integer().required(),
-  }),
+  },
 };
 
 const addReview = async (ctx) => {

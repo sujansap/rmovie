@@ -39,7 +39,7 @@ const deleteById = async (rid) => {
   try {
     const deleted = await reviewRepository.deleteById(rid);
     if (!deleted) {
-      throw Error(`No movie with id ${id} exists`, { id });
+      throw Error(`No review with id ${id} exists`, { id });
     }
   } catch (error) {
     throw handleDBError(error);

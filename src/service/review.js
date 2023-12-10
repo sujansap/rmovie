@@ -37,6 +37,7 @@ const add = async (uid, mid, review, rating) => {
 
 const deleteById = async (rid) => {
   try {
+    console.log("truing to delete a review with id + " + rid);
     const deleted = await reviewRepository.deleteById(rid);
     if (!deleted) {
       throw Error(`No review with id ${id} exists`, { id });

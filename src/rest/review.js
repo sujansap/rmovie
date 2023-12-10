@@ -48,6 +48,7 @@ addReview.validate = {
 };
 
 const deleteById = async (ctx) => {
+  console.log("user wants to delete a review for a movie");
   await reviewService.deleteById(Number(ctx.params.id));
   ctx.status = 204;
 };

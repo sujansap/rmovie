@@ -40,11 +40,6 @@ const getDataById = async (table, filter) => {
 const deleteDataById = async (table, filter) => {
   try {
     const rows = await prisma[table].deleteMany(filter);
-    if (rows.count === 0) {
-      console.log("No rows were deleted. The specified row does not exist.");
-    } else {
-      console.log(`${rows.count} row(s) deleted successfully.`);
-    }
 
     console.log(rows);
     return rows;

@@ -4,7 +4,7 @@ module.exports = {
     disabled: false,
   },
   cors: {
-    origins: ["https://fwd-movie-app.onrender.com/"],
+    origins: ["https://fwd-movie-app.onrender.com"],
     maxAge: 3 * 60 * 60,
   },
   database_tables: {

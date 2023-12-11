@@ -1,5 +1,6 @@
 const { getLogger } = require("../core/logging");
 const { prisma, tables } = require("../data/index");
+
 const dbData = require("./index");
 
 const TABLE = tables.reviews;

@@ -1,6 +1,6 @@
 const movieRepository = require("../repository/movie");
-
 const ServiceError = require("../core/serviceError");
+
 const handleDBError = require("./_handleDBError");
 
 const getAll = async () => {

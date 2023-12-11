@@ -1,23 +1,22 @@
 //app
-const Koa = require('koa');
+const Koa = require("koa");
 
 //parser
-const bodyParser = require('koa-bodyparser');
+const bodyParser = require("koa-bodyparser");
 
 //logger
-const config = require('config'); 
-let { initializeLogger, getLogger } = require('./core/logging');
+const config = require("config");
+const koaCors = require("@koa/cors");
+
+let { initializeLogger, getLogger } = require("./core/logging");
 
 //rest
-const installRest = require('./rest');
+const installRest = require("./rest");
 
 //koa cors
-const koaCors = require('@koa/cors');
 
-
-const installMiddlewares = require('./core/installMiddlewares'); 
-
-const { getPrimsa, shutdownData } = require('./data/index');
+const installMiddlewares = require("./core/installMiddlewares");
+const { getPrimsa, shutdownData } = require("./data/index");
 
 //later toegevoegd
 /*
@@ -40,16 +39,14 @@ async function main(){
 }
 */
 //dit alles moet in main bestand // maar refactor naar verschillende bestanden
-//koa cors 
-const CORS_ORIGINS = config.get('cors.origins'); 
-const CORS_MAX_AGE = config.get('cors.maxAge');
+//koa cors
+const CORS_ORIGINS = config.get("cors.origins");
+const CORS_MAX_AGE = config.get("cors.maxAge");
 
 //logger
-const NODE_ENV = process.env.NODE_ENV; 
-const LOG_LEVEL = config.get('log.level'); 
-const LOG_DISABLED = config.get('log.disabled'); 
-
-
+const NODE_ENV = process.env.NODE_ENV;
+const LOG_LEVEL = config.get("log.level");
+const LOG_DISABLED = config.get("log.disabled");
 
 module.exports = async function createServer() {
   initializeLogger({
@@ -60,11 +57,9 @@ module.exports = async function createServer() {
     },
   });
 
-
-   //getPrisma();
+  //getPrisma();
 
   const app = new Koa();
-
 
   app.use(
     koaCors({
@@ -75,18 +70,16 @@ module.exports = async function createServer() {
         // Not a valid domain at this point, let's return the first valid as we should return a string
         return CORS_ORIGINS[0];
       },
-      allowHeaders: ['Accept', 'Content-Type', 'Authorization'],
+      allowHeaders: ["Accept", "Content-Type", "Authorization"],
       maxAge: CORS_MAX_AGE,
     })
   );
 
   app.use(bodyParser());
 
-  installMiddlewares(app); 
-  
-  installRest(app);
-  
+  installMiddlewares(app);
 
+  installRest(app);
 
   return {
     getApp() {
@@ -95,10 +88,10 @@ module.exports = async function createServer() {
 
     start() {
       return new Promise((resolve) => {
-        app.listen(9000, () => {
-          getLogger().info('🚀 Server listening on http://localhost:9000');
-          resolve();
-        });
+        const port = config.get("port"); // 👈
+        app.listen(port); // 👈
+        getLogger().info(`🚀 Server listening on http://localhost:${port}`); // 👈
+        resolve();
       });
     },
 
@@ -106,8 +99,7 @@ module.exports = async function createServer() {
       app.removeAllListeners();
       //import prisma and shutdown the connection
       await shutdownData();
-      getLogger().info('Goodbye! 👋');
+      getLogger().info("Goodbye! 👋");
     },
   };
-
-}
+};

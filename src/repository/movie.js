@@ -1,6 +1,8 @@
 const { add } = require("winston");
+
 const { getLogger } = require("../core/logging");
 const { prisma, tables } = require("../data/index");
+
 const { addGenres } = require("./genre");
 
 const dbData = require("./index");

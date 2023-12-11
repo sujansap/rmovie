@@ -1,9 +1,8 @@
 const Router = require("@koa/router");
-const movieService = require("../service/movie");
-
 const Joi = require("joi");
-const validate = require("../core/validation");
 
+const movieService = require("../service/movie");
+const validate = require("../core/validation");
 const { requireAuthentication } = require("../core/auth");
 
 const getAllMovies = async (ctx) => {

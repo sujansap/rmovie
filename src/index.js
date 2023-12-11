@@ -1,22 +1,21 @@
-const createServer = require('./createServer'); // 👈 3
+const createServer = require("./createServer");
 
-async function main() { // 👈 1
-  // 👇 4
+async function main() {
   try {
-    const server = await createServer(); // 👈 5
-    await server.start(); // 👈 5
+    const server = await createServer();
+    await server.start();
 
     // 👇 6
     async function onClose() {
-      await server.stop(); // 👈 6
-      process.exit(0); // 👈 8
+      await server.stop();
+      process.exit(0);
     }
 
-    process.on('SIGTERM', onClose); // 👈 7
-    process.on('SIGQUIT', onClose); // 👈 7
+    process.on("SIGTERM", onClose);
+    process.on("SIGQUIT", onClose);
   } catch (error) {
-    console.error(error); // 👈 4
-    process.exit(-1); // 👈 4
+    console.error(error);
+    process.exit(-1);
   }
 }
-main(); // 👈 2
+main();

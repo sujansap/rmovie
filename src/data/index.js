@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const config = require('config');
+
 const { getLogger } = require('../core/logging');
 
 const prisma = new PrismaClient();

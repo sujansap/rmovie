@@ -1,14 +1,13 @@
+const config = require("config");
+
 const userRepository = require("../repository/user");
-
 const ServiceError = require("../core/serviceError");
-const handleDBError = require("./_handleDBError");
-
 const { hashPassword, verifyPassword } = require("../core/password");
 const { generateJWT, verifyJWT } = require("../core/jwt");
-const config = require("config");
 const { getLogger } = require("../core/logging");
-
 const Role = require("../core/roles");
+
+const handleDBError = require("./_handleDBError");
 
 const checkAndParseSession = async (authHeader) => {
   if (!authHeader) {

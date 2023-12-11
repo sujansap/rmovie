@@ -1,8 +1,8 @@
 const Router = require("@koa/router");
-const userService = require("../service/user");
 const Joi = require("joi");
-const validate = require("../core/validation");
 
+const userService = require("../service/user");
+const validate = require("../core/validation");
 const { requireAuthentication, makeRequireRole } = require("../core/auth");
 const Role = require("../core/roles");
 

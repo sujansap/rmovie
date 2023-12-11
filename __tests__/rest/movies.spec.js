@@ -1,7 +1,6 @@
 const supertest = require("supertest");
 
 const { tables } = require("../../src/data/index");
-
 const { withServer, login } = require("../supertest.setup");
 const { testAuthHeader } = require("../common/auth");
 

@@ -9,4 +9,9 @@ module.exports = {
     genreMovies: "TABLE_GENREMOVIES",
   },
   port: "PORT",
+  auth: {
+    jwt: {
+      secret: "AUTH_JWT_SECRET",
+    },
+  },
 };

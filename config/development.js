@@ -4,7 +4,7 @@ module.exports = {
     disabled: false,
   },
   cors: {
-    origins: ["https://fwd-movie-app.onrender.com/"],
+    origins: ["http://localhost:5173"],
     maxAge: 3 * 60 * 60,
   },
   port: 9000,

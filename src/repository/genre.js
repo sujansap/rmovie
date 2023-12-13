@@ -21,6 +21,28 @@ const getGenreId = async (g) => {
 };
 
 const addGenres = async (mid, genres) => {
+  try {
+    const genreIds = await Promise.all(genres.map(getGenreId));
+
+    const movieGenresData = genreIds.map((gid) => ({
+      genreId: gid,
+      movieId: mid,
+    }));
+
+    await prisma[tables.movieGenres].createMany({
+      data: movieGenresData,
+    });
+  } catch (error) {
+    getLogger().error("Error", {
+      error,
+    });
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+/*
+const addGenres = async (mid, genres) => {
   //when you add a movie, you have to give genres, but genres are added to different table
   //for that reason we need to know the id of the movie row we just added into the db
   console.log("the big test ... genreId, movieId" + " movieid: " + mid);
@@ -44,7 +66,7 @@ const addGenres = async (mid, genres) => {
     await prisma.$disconnect();
   }
 };
-
+*/
 module.exports = {
   getAll,
   addGenres,

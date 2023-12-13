@@ -84,7 +84,7 @@ const getReviewForMovie = async (ctx) => {
 
   const data = await movieService.getReviewForMovie(
     Number(userId),
-    Number(ctx.params.movieId)
+    Number(ctx.params.id)
   );
 
   ctx.body = data;
@@ -92,7 +92,7 @@ const getReviewForMovie = async (ctx) => {
 
 getReviewForMovie.validationScheme = {
   params: {
-    movieId: Joi.number().integer().required(),
+    id: Joi.number().integer().required(),
   },
 };
 /*
@@ -116,6 +116,23 @@ const updateMovie = async(ctx)=>{
    ctx.body = await movieService.updateMovie(id, data);
 }
 */
+const getAverageRating = async (ctx) => {
+  const data = await movieService.getAverageRating(Number(ctx.params.id));
+  ctx.body = data;
+};
+getAverageRating.validationScheme = {
+  params: {
+    id: Joi.number().integer().required(),
+  },
+};
+
+const getAllGenres = async (ctx) => {
+  const data = await movieService.getAllGenres();
+  ctx.body = data;
+};
+
+getAllGenres.validationScheme = null;
+
 module.exports = (app) => {
   const router = new Router({ prefix: "/movies" });
 
@@ -127,24 +144,17 @@ module.exports = (app) => {
   );
 
   router.get(
+    "/genres",
+    requireAuthentication,
+    validate(getAllMovies.validationScheme),
+    getAllGenres
+  );
+
+  router.get(
     "/:id",
     requireAuthentication,
     validate(getMovieById.validationScheme),
     getMovieById
-  );
-
-  router.post(
-    "/",
-    requireAuthentication,
-    validate(addMovie.validationScheme),
-    addMovie
-  );
-  //router.put('/:id', updateMovie);
-  router.delete(
-    "/:id",
-    requireAuthentication,
-    validate(deleteMovie.validationScheme),
-    deleteMovie
   );
 
   router.get(
@@ -163,10 +173,31 @@ module.exports = (app) => {
 
   //get the review of a movie for the logged in user
   router.get(
-    "/:movieId/review",
+    "/:id/review",
     requireAuthentication,
     validate(getReviewForMovie.validationScheme),
     getReviewForMovie
+  );
+
+  router.get(
+    "/:id/rating",
+    requireAuthentication,
+    validate(getAverageRating.validationScheme),
+    getAverageRating
+  );
+
+  router.post(
+    "/",
+    requireAuthentication,
+    validate(addMovie.validationScheme),
+    addMovie
+  );
+  //router.put('/:id', updateMovie);
+  router.delete(
+    "/:id",
+    requireAuthentication,
+    validate(deleteMovie.validationScheme),
+    deleteMovie
   );
 
   app.use(router.routes()).use(router.allowedMethods());

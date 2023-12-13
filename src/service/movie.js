@@ -39,6 +39,28 @@ const getById = async (mid) => {
   return { items: data, count: data.length };
 };
 
+const getAverageRating = async (mid) => {
+  const data = await movieRepository.getAverageRating(mid);
+
+  if (
+    !data ||
+    !data._avg ||
+    data._avg.rating === null ||
+    data._avg.rating === undefined
+  ) {
+    throw ServiceError.notFound(`No rating yet for movie with ${mid}`, { mid });
+  }
+  data.rating = data._avg.rating;
+  delete data._avg;
+  return { items: data, count: 1 };
+};
+
+const getAllGenres = async () => {
+  const data = await movieRepository.getAllGenres();
+
+  return { items: data, count: data.length };
+};
+
 const getMovieGeneres = async (mid) => {
   let data = await movieRepository.getMovieGenre(mid);
   data = data.genreMovies.map((item) => item.genre.genre);
@@ -77,7 +99,6 @@ const updateMovie = async (id, data)=>{
     return await movieRepository.updateById(id, data);
 }
 */
-// de rest nog uitwerken
 
 const getReviewForMovie = async (uid, mid) => {
   const data = await movieRepository.getReviewForMovie(uid, mid);
@@ -108,4 +129,6 @@ module.exports = {
   getAllReviewsForMovie,
   getReviewForMovie,
   //addReview
+  getAverageRating,
+  getAllGenres,
 };

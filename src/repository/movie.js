@@ -1,9 +1,5 @@
-const { add } = require("winston");
-
 const { getLogger } = require("../core/logging");
 const { prisma, tables } = require("../data/index");
-
-const { addGenres } = require("./genre");
 
 const dbData = require("./index");
 
@@ -14,6 +10,15 @@ const getAll = async () => {
   return await dbData.getAllData(TABLE, filter);
 };
 
+const getAverageRating = async (movieId) => {
+  const averageRating = await prisma[tables.reviews].aggregate({
+    where: { movieId },
+    _avg: {
+      rating: true,
+    },
+  });
+  return averageRating;
+};
 const getAllReviewsForMovie = async (mid) => {
   /*const filter = {
     where:{
@@ -40,6 +45,11 @@ const getAllReviewsForMovie = async (mid) => {
     },
   };
   return await dbData.getAllData(tables.reviews, filter);
+};
+
+const getAllGenres = async () => {
+  const filter = {};
+  return await dbData.getAllData(tables.genres, filter);
 };
 
 const getMovieGenre = async (mid) => {
@@ -117,6 +127,39 @@ const deleteById = async (id) => {
   return await dbData.deleteDataById(TABLE, filter);
 };
 
+const getGenreId = async (g) => {
+  const filter = {
+    where: {
+      genre: g,
+    },
+  };
+  const genre = await dbData.getDataById(tables.genres, filter);
+
+  return genre.genreId;
+};
+
+const addGenres = async (mid, genres) => {
+  try {
+    const genreIds = await Promise.all(genres.map(getGenreId));
+
+    const movieGenresData = genreIds.map((gid) => ({
+      genreId: gid,
+      movieId: mid,
+    }));
+
+    return await prisma[tables.movieGenres].createMany({
+      data: movieGenresData,
+    });
+  } catch (error) {
+    getLogger().error("Error", {
+      error,
+    });
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
 // add moet nog in index
 const addMovie = async ({ title, userId, poster, synopsis, genres }) => {
   //when you add a movie, you have to give genres, but genres are added to different table
@@ -191,4 +234,6 @@ module.exports = {
   getMovieGenre,
   getAllReviewsForMovie,
   //addReview
+  getAverageRating,
+  getAllGenres,
 };

@@ -48,7 +48,8 @@ const getAverageRating = async (mid) => {
     data._avg.rating === null ||
     data._avg.rating === undefined
   ) {
-    throw ServiceError.notFound(`No rating yet for movie with ${mid}`, { mid });
+    //throw ServiceError.notFound(`No rating yet for movie with ${mid}`, { mid });
+    data._avg.rating = -1;
   }
   data.rating = data._avg.rating;
   delete data._avg;

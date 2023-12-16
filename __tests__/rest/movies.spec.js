@@ -285,6 +285,64 @@ describe("Movies", () => {
     });
   });
 
+  describe("GET /api/movies/:id/rating", () => {
+    beforeAll(async () => {
+      await prisma[tables.movies].createMany({ data: data.movies });
+      await prisma[tables.reviews].createMany({ data: data.reviews });
+    });
+
+    afterAll(async () => {
+      await prisma[tables.movies].deleteMany({
+        where: {
+          movieId: {
+            in: dataToDelete.movies,
+          },
+        },
+      });
+    });
+
+    it("should 200 and return the rating", async () => {
+      const response = await request
+        .get(`${url}/1/rating`)
+        .set("Authorization", authHeader);
+
+      expect(response.status).toBe(200);
+
+      expect(response.body.items).toEqual({ rating: 100 });
+    });
+
+    it("should return -1 if no rating yet", async () => {
+      const response = await request
+        .get(`${url}/2/rating`)
+        .set("Authorization", authHeader);
+
+      expect(response.status).toBe(200);
+
+      expect(response.body.items).toEqual({ rating: -1 });
+    });
+  });
+
+  describe("GET /api/movies/genres", () => {
+    it("should 200 and return the rating", async () => {
+      const response = await request
+        .get(`${url}/genres`)
+        .set("Authorization", authHeader);
+
+      expect(response.status).toBe(200);
+
+      expect(response.body.items).toEqual([
+        {
+          genre: "action",
+          genreId: 1,
+        },
+        {
+          genre: "comedy",
+          genreId: 2,
+        },
+      ]);
+    });
+  });
+
   describe("GET /api/movies/:id/reviews", () => {
     beforeAll(async () => {
       await prisma[tables.movies].createMany({ data: data.movies });

@@ -7,6 +7,7 @@ const { requireAuthentication } = require("../core/auth");
 
 const getAllMovies = async (ctx) => {
   const data = await movieService.getAll();
+  console.log(data);
   ctx.body = data;
 };
 
@@ -14,6 +15,7 @@ getAllMovies.validationScheme = null;
 
 const getMovieById = async (ctx) => {
   const data = await movieService.getById(Number(ctx.params.id));
+
   ctx.body = data;
 };
 
@@ -25,7 +27,7 @@ getMovieById.validationScheme = {
 
 const getMovieGenres = async (ctx) => {
   const data = await movieService.getMovieGeneres(Number(ctx.params.id));
-  console.log(data);
+
   ctx.body = data;
 };
 
@@ -66,10 +68,11 @@ const addMovie = async (ctx) => {
   //laer the 1 needs to change to the user that is loggedt in at the moment of adding
 
   const addedMovie = await movieService.addMovie(d);
-  console.log(addedMovie);
+
   ctx.status = 201;
   ctx.body = addedMovie;
 };
+
 addMovie.validationScheme = {
   body: {
     title: Joi.string().required(),
@@ -87,6 +90,7 @@ const getReviewForMovie = async (ctx) => {
     Number(ctx.params.id)
   );
 
+  console.log(data);
   ctx.body = data;
 };
 
@@ -118,6 +122,7 @@ const updateMovie = async(ctx)=>{
 */
 const getAverageRating = async (ctx) => {
   const data = await movieService.getAverageRating(Number(ctx.params.id));
+  console.log(data);
   ctx.body = data;
 };
 getAverageRating.validationScheme = {

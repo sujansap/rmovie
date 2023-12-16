@@ -155,8 +155,6 @@ const addGenres = async (mid, genres) => {
       error,
     });
     throw error;
-  } finally {
-    await prisma.$disconnect();
   }
 };
 

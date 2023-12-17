@@ -23,12 +23,14 @@ async function main() {
   console.log("seeding the db....");
   const userType1 = await prisma[TABLE_USERTYPES].create({
     data: {
+      userTypeId: 2,
       name: Role.USER,
     },
   });
 
   const userType2 = await prisma[TABLE_USERTYPES].create({
     data: {
+      userTypeId: 1,
       name: Role.ADMIN,
     },
   });
@@ -50,7 +52,7 @@ async function main() {
       email: "user2@example.com",
       password:
         "$argon2id$v=19$m=131072,t=6,p=4$7A7q0MvdTJ4pWSp/ZZjITw$EmMs3VBVuF5H9vMzsQiKWVYroKHG+j/WxjVmvjJIUmE",
-      userTypeId: userType2.userTypeId,
+      userTypeId: userType1.userTypeId,
     },
   });
 

@@ -38,6 +38,7 @@ async function main() {
   // create an admin
   const user1 = await prisma[TABLE_USERS].create({
     data: {
+      userId: 1,
       username: "Jan admin",
       email: "janadmin@gmail.com",
       password:
@@ -48,8 +49,9 @@ async function main() {
 
   const user2 = await prisma[TABLE_USERS].create({
     data: {
-      username: "user2",
-      email: "user2@example.com",
+      userId: 2,
+      username: "user",
+      email: "januser@gmail.com",
       password:
         "$argon2id$v=19$m=131072,t=6,p=4$7A7q0MvdTJ4pWSp/ZZjITw$EmMs3VBVuF5H9vMzsQiKWVYroKHG+j/WxjVmvjJIUmE",
       userTypeId: userType1.userTypeId,
@@ -59,12 +61,14 @@ async function main() {
   // Create genres
   const genre1 = await prisma[TABLE_GENRES].create({
     data: {
+      genreId: 1,
       genre: "action",
     },
   });
 
   const genre2 = await prisma[TABLE_GENRES].create({
     data: {
+      genreId: 2,
       genre: "comedy",
     },
   });
@@ -72,6 +76,7 @@ async function main() {
   // Create movies
   const movie1 = await prisma[TABLE_MOVIES].create({
     data: {
+      movieId: 1,
       title: "Avengers",
       synopsis:
         "When Thor's evil brother, Loki (Tom Hiddleston), gains access to the unlimited power of the energy cube called the Tesseract, Nick Fury (Samuel L. Jackson), director of S.H.I.E.L.D., initiates a superhero recruitment effort to defeat the unprecedented threat to Earth. Joining Fury's \"dream team\" are Iron Man (Robert Downey Jr.), Captain America (Chris Evans), the Hulk (Mark Ruffalo), Thor (Chris Hemsworth), the Black Widow (Scarlett Johansson) and Hawkeye (Jeremy Renner).",
@@ -82,12 +87,13 @@ async function main() {
 
   const movie2 = await prisma[TABLE_MOVIES].create({
     data: {
+      movieId: 2,
       title: "The Truman show",
       synopsis:
         "He doesn't know it, but everything in Truman Burbank's (Jim Carrey) life is part of a massive TV set. Executive producer Christof (Ed Harris) orchestrates \"The Truman Show,\" a live broadcast of Truman's every move captured by hidden cameras. Cristof tries to control Truman's mind, even removing his true love, Sylvia (Natascha McElhone), from the show and replacing her with Meryl (Laura Linney). As Truman gradually discovers the truth, however, he must decide whether to act on it.",
       poster:
         "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQJ6lpaPi5tx1WlFckXUTwPNioqCsLfTAqtgr2V5AGdLun7uCOW",
-      userId: user2.userId,
+      userId: user1.userId,
     },
   });
 
@@ -108,6 +114,7 @@ async function main() {
   // Create reviews
   await prisma[TABLE_REVIEWS].create({
     data: {
+      reviewId: 1,
       userId: user1.userId,
       movieId: movie1.movieId,
       rating: 5,
@@ -117,6 +124,7 @@ async function main() {
 
   await prisma[TABLE_REVIEWS].create({
     data: {
+      reviewId: 2,
       userId: user2.userId,
       movieId: movie2.movieId,
       rating: 4,

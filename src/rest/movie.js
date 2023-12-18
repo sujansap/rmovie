@@ -3,7 +3,8 @@ const Joi = require("joi");
 
 const movieService = require("../service/movie");
 const validate = require("../core/validation");
-const { requireAuthentication } = require("../core/auth");
+const { requireAuthentication, makeRequireRole } = require("../core/auth");
+const Role = require("../core/roles");
 
 const getAllMovies = async (ctx) => {
   const data = await movieService.getAll();
@@ -49,7 +50,8 @@ getAllReviewsForMovie.validationScheme = {
 };
 
 const deleteMovie = async (ctx) => {
-  await movieService.deleteById(Number(ctx.params.id));
+  const userId = ctx.state.session.userId;
+  await movieService.deleteById(Number(ctx.params.id), userId);
   ctx.status = 204;
 };
 
@@ -191,9 +193,12 @@ module.exports = (app) => {
     getAverageRating
   );
 
+  const requireAdmin = makeRequireRole(Role.ADMIN);
+
   router.post(
     "/",
     requireAuthentication,
+    requireAdmin,
     validate(addMovie.validationScheme),
     addMovie
   );
@@ -201,6 +206,7 @@ module.exports = (app) => {
   router.delete(
     "/:id",
     requireAuthentication,
+    requireAdmin,
     validate(deleteMovie.validationScheme),
     deleteMovie
   );

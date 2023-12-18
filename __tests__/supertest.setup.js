@@ -7,7 +7,7 @@ const { getPrimsa } = require("../src/data"); // 👈 4
 const login = async (supertest) => {
   // 👇 7
   const response = await supertest.post("/api/users/login").send({
-    email: "test.user@hogent.be",
+    email: "admin.user@hogent.be",
     password: "verydifficult",
   });
 

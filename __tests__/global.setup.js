@@ -47,16 +47,16 @@ module.exports = async () => {
   await prisma[tables.users].createMany({
     data: [
       {
-        userId: 1,
+        userId: 2,
         username: "Test_User",
         email: "test.user@hogent.be",
         password:
           "$argon2id$v=19$m=131072,t=6,p=4$7A7q0MvdTJ4pWSp/ZZjITw$EmMs3VBVuF5H9vMzsQiKWVYroKHG+j/WxjVmvjJIUmE",
-        about: "this is an user",
-        userTypeId: 2,
+        about: "this is also an admin user",
+        userTypeId: 1,
       },
       {
-        userId: 2,
+        userId: 1,
         username: "Admin_User",
         email: "admin.user@hogent.be",
         password:

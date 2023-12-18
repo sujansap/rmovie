@@ -75,16 +75,18 @@ const getMovieGeneres = async (mid) => {
   return data;
 };
 
-const deleteById = async (id) => {
-  try {
-    const deleted = await movieRepository.deleteById(id);
-
-    if (deleted.count === 0) {
-      throw ServiceError.notFound(`No movie with id ${id} exists`, { id });
-    }
-  } catch (error) {
-    throw handleDBError(error);
+const deleteById = async (id, userId) => {
+  //check if  the admin was the one who added of the movie
+  const movie = await getById(id);
+  console.log(movie.items.userId);
+  if (movie.items.userId !== userId) {
+    throw ServiceError.forbidden(`The movie was not added by you`, {
+      mid: id,
+      uid: userId,
+    });
   }
+
+  await movieRepository.deleteById(id);
 };
 
 const addMovie = async (data) => {

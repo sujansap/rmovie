@@ -7,9 +7,11 @@ const { testAuthHeader } = require("../common/auth");
 const data = {
   userTypes: [
     {
+      userTypeId: 2,
       name: "user",
     },
     {
+      userTypeId: 1,
       name: "admin",
     },
   ],
@@ -379,7 +381,7 @@ describe("Movies", () => {
           poster: "testmovie.jpg",
           review: "Great movie!",
           reviewId: 1,
-          user: "Test_User",
+          user: "Admin_User",
           userId: 1,
         },
         {
@@ -389,7 +391,7 @@ describe("Movies", () => {
           poster: "testmovie.jpg",
           review: "this movie is amazing",
           reviewId: 2,
-          user: "Admin_User",
+          user: "Test_User",
           userId: 2,
         },
       ]);
@@ -462,7 +464,7 @@ describe("Movies", () => {
         reviewId: 1,
         title: "Avengers",
         userId: 1,
-        username: "Test_User",
+        username: "Admin_User",
       });
     });
 
@@ -617,6 +619,15 @@ describe("Movies", () => {
   describe("DELETE /api/movies/:id", () => {
     beforeAll(async () => {
       await prisma[tables.movies].createMany({ data: data.movies[0] });
+      await prisma[tables.movies].createMany({
+        data: {
+          movieId: 2,
+          title: "Avengers 2",
+          synopsis: "This is a second test movie.",
+          poster: "testmovie2.jpg",
+          userId: 2,
+        },
+      });
     });
 
     afterAll(async () => {
@@ -642,7 +653,24 @@ describe("Movies", () => {
         code: "NOT_FOUND",
         message: "No movie with id 4 exists",
         details: {
-          id: 4,
+          mid: 4,
+        },
+      });
+      expect(response.body.stack).toBeTruthy();
+    });
+
+    it("should 403 when trying to delete other admins movie", async () => {
+      const response = await request
+        .delete(`${url}/2`)
+        .set("Authorization", authHeader);
+
+      expect(response.statusCode).toBe(403);
+      expect(response.body).toMatchObject({
+        code: "FORBIDDEN",
+        message: "The movie was not added by you",
+        details: {
+          mid: 2,
+          uid: 1,
         },
       });
       expect(response.body.stack).toBeTruthy();

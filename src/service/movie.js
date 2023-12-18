@@ -36,7 +36,8 @@ const getById = async (mid) => {
   }
 
   data.genreMovies = data.genreMovies.map((item) => item.genre.genre);
-  return { items: data, count: data.length };
+  return data;
+  //return { items: data, count: data.length };
 };
 
 const getAverageRating = async (mid) => {
@@ -53,7 +54,8 @@ const getAverageRating = async (mid) => {
   }
   data.rating = data._avg.rating;
   delete data._avg;
-  return { items: data, count: 1 };
+  //return data;
+  return data;
 };
 
 const getAllGenres = async () => {
@@ -78,15 +80,16 @@ const getMovieGeneres = async (mid) => {
 const deleteById = async (id, userId) => {
   //check if  the admin was the one who added of the movie
   const movie = await getById(id);
-  console.log(movie.items.userId);
-  if (movie.items.userId !== userId) {
+  console.log("trying to delete a movie");
+  //console.log(movie.items.userId);
+  if (movie.userId !== userId) {
     throw ServiceError.forbidden(`The movie was not added by you`, {
       mid: id,
       uid: userId,
     });
   }
 
-  await movieRepository.deleteById(id);
+  return await movieRepository.deleteById(id);
 };
 
 const addMovie = async (data) => {
@@ -104,12 +107,14 @@ const updateMovie = async (id, data)=>{
 */
 
 const getReviewForMovie = async (uid, mid) => {
-  const data = await movieRepository.getReviewForMovie(uid, mid);
+  let data = await movieRepository.getReviewForMovie(uid, mid);
   if (!data) {
-    throw ServiceError.notFound(
+    /*throw ServiceError.notFound(
       `No review for movie with id ${mid} exists for the user with id ${uid}`,
       { mid, uid }
-    );
+    );*/
+    data = {};
+    return data;
   }
 
   data.title = data.movie.title;
@@ -119,7 +124,8 @@ const getReviewForMovie = async (uid, mid) => {
   delete data.movie;
 
   //wat als er de user nog geen review heeft gemaakt voor een movie
-  return { items: data };
+  //return { items: data };
+  return data;
 };
 
 module.exports = {

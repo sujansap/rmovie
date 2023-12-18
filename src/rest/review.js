@@ -60,10 +60,12 @@ deleteById.validate = {
 };
 
 const updateReview = async (ctx) => {
+  const userId = ctx.state.session.userId;
   let data = { ...ctx.request.body };
   const rid = Number(ctx.params.id);
+
   data.movieId = Number(data.movieId);
-  ctx.body = await reviewService.updateReview(rid, data);
+  ctx.body = await reviewService.updateReview(rid, data, userId);
 };
 updateReview.validate = {
   params: {

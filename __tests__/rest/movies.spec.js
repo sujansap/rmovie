@@ -180,7 +180,7 @@ describe("Movies", () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.items).toEqual({
+      expect(response.body).toEqual({
         movieId: 1,
         title: "Avengers",
         synopsis: "This is a test movie.",
@@ -310,7 +310,7 @@ describe("Movies", () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.items).toEqual({ rating: 100 });
+      expect(response.body).toEqual({ rating: 100 });
     });
 
     it("should return -1 if no rating yet", async () => {
@@ -320,7 +320,7 @@ describe("Movies", () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.items).toEqual({ rating: -1 });
+      expect(response.body).toEqual({ rating: -1 });
     });
   });
 
@@ -455,7 +455,7 @@ describe("Movies", () => {
 
         return response;
       };
-      expect(removeDate(response.body.items)).toEqual({
+      expect(removeDate(response.body)).toEqual({
         //date: "2023-12-09T11:26:33.802Z",
         movieId: 1,
         poster: "testmovie.jpg",
@@ -468,13 +468,15 @@ describe("Movies", () => {
       });
     });
 
-    it("should 404 when requesting not existing review", async () => {
+    it("should return empty review when requesting not existing review", async () => {
       const response = await request
         .get(`${url}/2/review`)
         .set("Authorization", authHeader);
 
-      expect(response.statusCode).toBe(404);
-      expect(response.body).toMatchObject({
+      expect(response.statusCode).toBe(200);
+
+      expect(response.body).toEqual({});
+      /*expect(response.body).toMatchObject({
         code: "NOT_FOUND",
         message: "No review for movie with id 2 exists for the user with id 1",
         details: {
@@ -482,7 +484,8 @@ describe("Movies", () => {
           uid: 1,
         },
       });
-      expect(response.body.stack).toBeTruthy();
+      */
+      // expect(response.body.stack).toBeTruthy();
     });
 
     it("should 400 when given an argument", async () => {

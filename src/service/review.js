@@ -19,16 +19,15 @@ const getById = async (rid) => {
   const data = await reviewRepository.getById(rid);
 
   if (!data) {
-    throw ServiceError.notFound(
-      `No review with for ${mid} exists for this user ${uid}`,
-      { mid, uid }
-    );
+    throw ServiceError.notFound(`No review with id ${rid} exists`, { rid });
   }
-  return data;
+
+  return { items: data, count: 1 };
 };
 
 const add = async (uid, mid, review, rating) => {
   let addedReview;
+
   try {
     addedReview = await reviewRepository.add(uid, mid, review, rating);
   } catch (error) {
@@ -49,12 +48,21 @@ const deleteById = async (rid) => {
   }
 };
 
-const updateReview = async (rid, data) => {
+const updateReview = async (rid, data, userId) => {
+  console.log("wants to update a review");
+  const review = await getById(rid);
+
+  console.log(review);
+  console.log(userId);
+  if (review.items.userId !== userId) {
+    throw ServiceError.forbidden("You cannot edit someone elses review!");
+  }
+
   try {
     const updated = await reviewRepository.updateReview(rid, data);
 
     if (!updated) {
-      throw Error(`No movie with id ${id} exists`, { id });
+      throw ServiceError.notFound(`No movie with id ${id} exists`, { id });
     }
     return updated;
   } catch (error) {

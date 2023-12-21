@@ -41,13 +41,13 @@ In the `.env` file `DATABASE_URL`:
 
 ## Start this project
 
-- Install all dependencies: yarn
+- Install all dependencies: `yarn install`
 - Make sure a .env exists (see above)
 - Start the development server: yarn start
 
 ## Test this project
 
-- Install all dependencies: yarn
+- Install all dependencies: `yarn install`
 - Make sure a .env.test exists with NODE_ENV=test (see above)
 - Make sure (!!) database_name is different than the name used in `.env`
 - Start the development server: yarn test

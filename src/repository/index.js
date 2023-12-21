@@ -1,19 +1,16 @@
 const { getLogger } = require("../core/logging");
 const { prisma } = require("../data/index");
 
-//Alle service bestand hebben ook een bestanden in repo
-// als een functie te eenvoud is en voor alle bestanden gelijk is
-// wordt het hier in index gezet
+//All service files also have corresponding files in the repository.
+//If a function is too simple and is the same for all files, it is placed here in the index.
 
-// get all function that takes table name as input and gives
-// all rows back
 const getAllData = async (table, filter) => {
   try {
     const data = await prisma[table].findMany(filter);
 
     return data;
   } catch (error) {
-    getLogger().error("Error", {
+    getLogger().error("Error while getting all data", {
       error,
     });
     throw error;
@@ -27,7 +24,7 @@ const getDataById = async (table, filter) => {
     const data = await prisma[table].findUnique(filter);
     return data;
   } catch (error) {
-    getLogger().error("Error", {
+    getLogger().error("Error while getting data by id", {
       error,
     });
     throw error;
@@ -42,7 +39,7 @@ const deleteDataById = async (table, filter) => {
 
     return rows;
   } catch (error) {
-    getLogger().error("Error", {
+    getLogger().error("Error while deleting data", {
       error,
     });
     throw error;

@@ -1,6 +1,3 @@
-//let { MOVIES, REVIEWS } = require('../data/mock_data');
-const c = require("config");
-
 const reviewRepository = require("../repository/review");
 const ServiceError = require("../core/serviceError");
 

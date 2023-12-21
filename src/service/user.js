@@ -83,7 +83,6 @@ const getReviewForMovieForUser = async (uid, mid) => {
   delete data.user;
   delete data.movie;
 
-  //wat als er de user nog geen review heeft gemaakt voor een movie
   return data;
 };
 

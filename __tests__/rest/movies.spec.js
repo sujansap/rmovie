@@ -124,7 +124,7 @@ describe("Movies", () => {
     it("should 200 and return all movies", async () => {
       const response = await request.get(url).set("Authorization", authHeader);
       expect(response.status).toBe(200);
-      console.log("the amout of items :" + response.body.items.length);
+
       expect(response.body.items.length).toBe(2);
 
       expect(response.body.items).toEqual([
@@ -506,8 +506,6 @@ describe("Movies", () => {
     beforeAll(async () => {});
 
     afterAll(async () => {
-      console.log(toDeleteMovie);
-
       await prisma[tables.movies].delete({
         where: {
           movieId: toDeleteMovie,
@@ -527,7 +525,7 @@ describe("Movies", () => {
         });
 
       toDeleteMovie = response.body.movieId;
-      //console.log(toDelete);
+
       expect(response.status).toBe(201);
       expect(response.body.movieId).toBeTruthy();
       expect(response.body.title).toBe("Avengers");
@@ -641,7 +639,7 @@ describe("Movies", () => {
       const response = await request
         .delete(`${url}/1`)
         .set("Authorization", authHeader);
-      //console.log(response);
+
       expect(response.statusCode).toBe(204);
       expect(response.body).toEqual({});
     });

@@ -40,12 +40,6 @@ getUserById.validationScheme = {
     id: Joi.number().integer().positive(),
   },
 };
-/*
-const getAllReviewsForUser = async (ctx) => {
-  const data = await userService.getReviewsForUser(Number(ctx.params.id));
-  ctx.body = data;
-};
-*/
 
 const getReviewForMovieForUser = async (ctx) => {
   const data = await userService.getReviewForMovieForUser(
@@ -116,7 +110,6 @@ module.exports = (app) => {
     getUserById
   );
 
-  //router.get("/:id/reviews", requireAuthentication, getAllReviewsForUser);
   router.get(
     "/:userId/movies/:movieId/review",
     requireAuthentication,
@@ -124,7 +117,6 @@ module.exports = (app) => {
     getReviewForMovieForUser
   );
 
-  //router.put("/:userId/movies/:movieId/reviews", updateMovieReviewForUser);
   app.use(router.routes()).use(router.allowedMethods());
 };
 

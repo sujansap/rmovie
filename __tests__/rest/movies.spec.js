@@ -241,7 +241,7 @@ describe("Movies", () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body).toEqual(["action", "comedy"]);
+      expect(response.body).toEqual({ genres: ["action", "comedy"] });
     });
 
     it("should 400 when given an argument", async () => {

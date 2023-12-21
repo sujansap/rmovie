@@ -65,8 +65,6 @@ const addMovie = async (ctx) => {
   const userId = ctx.state.session.userId;
   const d = { ...ctx.request.body, userId };
 
-  //laer the 1 needs to change to the user that is loggedt in at the moment of adding
-
   const addedMovie = await movieService.addMovie(d);
 
   ctx.status = 201;

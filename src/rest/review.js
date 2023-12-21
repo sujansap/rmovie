@@ -2,7 +2,7 @@ const Router = require("@koa/router");
 const Joi = require("joi");
 
 const reviewService = require("../service/review");
-const { requireAuthentication, makeRequireRole } = require("../core/auth");
+const { requireAuthentication } = require("../core/auth");
 const Role = require("../core/roles");
 const validate = require("../core/validation");
 
@@ -15,12 +15,12 @@ const getAllReviews = async (ctx) => {
 
   ctx.body = data;
 };
-getAllReviews.validate = null;
+getAllReviews.validationScheme = null;
 
 const getById = async (ctx) => {
   ctx.body = await reviewService.getById(Number(ctx.params.id));
 };
-getById.validate = {
+getById.validationScheme = {
   params: {
     id: Joi.number().integer().required(),
   },
@@ -38,9 +38,9 @@ const addReview = async (ctx) => {
     Number(data.rating)
   );
 };
-addReview.validate = {
+addReview.validationScheme = {
   body: {
-    movieId: Joi.number().integer().required(),
+    movieId: Joi.number().integer().positive().required(),
     review: Joi.string().required(),
     rating: Joi.number().integer().min(0).max(100).required(),
   },
@@ -50,21 +50,23 @@ const deleteById = async (ctx) => {
   await reviewService.deleteById(Number(ctx.params.id));
   ctx.status = 204;
 };
-deleteById.validate = {
+deleteById.validationScheme = {
   params: {
     id: Joi.number().integer().required(),
   },
 };
 
 const updateReview = async (ctx) => {
+  console.log("here");
   const userId = ctx.state.session.userId;
+  console.log("here1");
   let data = { ...ctx.request.body };
   const rid = Number(ctx.params.id);
 
   data.movieId = Number(data.movieId);
   ctx.body = await reviewService.updateReview(rid, data, userId);
 };
-updateReview.validate = {
+updateReview.validationScheme = {
   params: {
     id: Joi.number().integer().required(),
   },
@@ -81,22 +83,47 @@ module.exports = (app) => {
   });
 
   //geef alle reviews van een bepaalde gebruiker
-  router.get("/", requireAuthentication, getAllReviews);
+  router.get(
+    "/",
+    requireAuthentication,
+    validate(getAllReviews.validationScheme),
+    getAllReviews
+  );
   //geef een bepaalde review van een bepaalde gebruiker
 
-  router.get("/:id", requireAuthentication, getById);
+  router.get(
+    "/:id",
+    requireAuthentication,
+    validate(getById.validationScheme),
+    getById
+  );
 
   //post een review
-  router.post("/", requireAuthentication, addReview);
+  router.post(
+    "/",
+    requireAuthentication,
+    validate(addReview.validationScheme),
+    addReview
+  );
 
   //movieId
   //van user die ingelogd is
   //hier zou eigenlijk gecontroleerd moeten worden of het de id
   //is van een review dat door de gebruiker die het wilt verwijderen is geplaats
-  router.delete("/:id", requireAuthentication, deleteById);
+  router.delete(
+    "/:id",
+    requireAuthentication,
+    validate(deleteById.validationScheme),
+    deleteById
+  );
 
   //update een review
-  router.put("/:id", requireAuthentication, updateReview);
+  router.put(
+    "/:id",
+    requireAuthentication,
+    validate(updateReview.validationScheme),
+    updateReview
+  );
 
   app.use(router.routes()).use(router.allowedMethods());
 };

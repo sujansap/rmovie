@@ -35,7 +35,6 @@ const getById = async (mid) => {
 
   data.genreMovies = data.genreMovies.map((item) => item.genre.genre);
   return data;
-  //return { items: data, count: data.length };
 };
 
 const getAverageRating = async (mid) => {
@@ -47,7 +46,6 @@ const getAverageRating = async (mid) => {
     data._avg.rating === null ||
     data._avg.rating === undefined
   ) {
-    //throw ServiceError.notFound(`No rating yet for movie with ${mid}`, { mid });
     data._avg.rating = -1;
   }
   data.rating = data._avg.rating;
@@ -72,6 +70,22 @@ const getMovieGeneres = async (mid) => {
     });
   }
 
+  return { genres: data };
+};
+
+const getReviewForMovie = async (uid, mid) => {
+  let data = await movieRepository.getReviewForMovie(uid, mid);
+  if (!data) {
+    data = {};
+    return data;
+  }
+
+  data.title = data.movie.title;
+  data.poster = data.movie.poster;
+  data.username = data.user.username;
+  delete data.user;
+  delete data.movie;
+
   return data;
 };
 
@@ -95,28 +109,6 @@ const addMovie = async (data) => {
   } catch (error) {
     throw handleDBError(error);
   }
-};
-
-const getReviewForMovie = async (uid, mid) => {
-  let data = await movieRepository.getReviewForMovie(uid, mid);
-  if (!data) {
-    /*throw ServiceError.notFound(
-      `No review for movie with id ${mid} exists for the user with id ${uid}`,
-      { mid, uid }
-    );*/
-    data = {};
-    return data;
-  }
-
-  data.title = data.movie.title;
-  data.poster = data.movie.poster;
-  data.username = data.user.username;
-  delete data.user;
-  delete data.movie;
-
-  //wat als er de user nog geen review heeft gemaakt voor een movie
-
-  return data;
 };
 
 module.exports = {

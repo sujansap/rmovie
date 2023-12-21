@@ -16,6 +16,11 @@ const getAll = async (uid) => {
           movieId: true,
           title: true,
           poster: true,
+          reviews: {
+            select: {
+              reviewId: true,
+            },
+          },
         },
       },
     },

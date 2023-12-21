@@ -9,7 +9,10 @@ const handleDBError = require("./_handleDBError");
 const getAll = async (uid) => {
   let data = await reviewRepository.getAll(uid);
   data = data.map((d) => {
-    return { ...d.movie };
+    d = { ...d.movie };
+    d.reviewId = d.reviews[0].reviewId;
+    delete d.reviews;
+    return d;
   });
 
   return { items: data, count: data.length };
@@ -22,7 +25,7 @@ const getById = async (rid) => {
     throw ServiceError.notFound(`No review with id ${rid} exists`, { rid });
   }
 
-  return { items: data, count: 1 };
+  return data;
 };
 
 const add = async (uid, mid, review, rating) => {
@@ -50,7 +53,7 @@ const deleteById = async (rid) => {
 const updateReview = async (rid, data, userId) => {
   const review = await getById(rid);
 
-  if (review.items.userId !== userId) {
+  if (review.userId !== userId) {
     throw ServiceError.forbidden("You cannot edit someone elses review!");
   }
 
@@ -65,7 +68,6 @@ const updateReview = async (rid, data, userId) => {
     throw handleDBError(error);
   }
 };
-// de rest nog uitwerken
 
 module.exports = {
   getAll,

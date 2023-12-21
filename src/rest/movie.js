@@ -8,7 +8,7 @@ const Role = require("../core/roles");
 
 const getAllMovies = async (ctx) => {
   const data = await movieService.getAll();
-  console.log(data);
+
   ctx.body = data;
 };
 
@@ -40,7 +40,7 @@ getMovieGenres.validationScheme = {
 
 const getAllReviewsForMovie = async (ctx) => {
   const data = await movieService.getAllReviewsForMovie(Number(ctx.params.id));
-  console.log(data);
+
   ctx.body = data;
 };
 getAllReviewsForMovie.validationScheme = {
@@ -62,8 +62,6 @@ deleteMovie.validationScheme = {
 };
 
 const addMovie = async (ctx) => {
-  console.log("someone is trying to add a movie");
-  console.log({ ...ctx.request.body });
   const userId = ctx.state.session.userId;
   const d = { ...ctx.request.body, userId };
 
@@ -92,7 +90,6 @@ const getReviewForMovie = async (ctx) => {
     Number(ctx.params.id)
   );
 
-  console.log(data);
   ctx.body = data;
 };
 
@@ -101,30 +98,9 @@ getReviewForMovie.validationScheme = {
     id: Joi.number().integer().required(),
   },
 };
-/*
-const addReview = async(ctx)=>{
-    //wat moet er precies gebeuren als een user al een review heeft voor die film
-    const data = {...ctx.request.body};
-    console.log("adding a review test: " + Number(ctx.params.id) );
-    ctx.body = await movieService.
-        addReview(
-        1,
-        Number(ctx.params.id),
-        data.review, 
-        Number(data.rating)
-        );
-}
-*/
-/*
-const updateMovie = async(ctx)=>{
-    const id = Number(ctx.params.id);
-    const data = {...ctx.request.body};
-   ctx.body = await movieService.updateMovie(id, data);
-}
-*/
+
 const getAverageRating = async (ctx) => {
   const data = await movieService.getAverageRating(Number(ctx.params.id));
-  console.log(data);
   ctx.body = data;
 };
 getAverageRating.validationScheme = {

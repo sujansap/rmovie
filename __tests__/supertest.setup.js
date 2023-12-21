@@ -1,33 +1,27 @@
-const supertest = require("supertest"); // 👈 4
+const supertest = require("supertest");
 
-const createServer = require("../src/createServer"); // 👈 3
-const { getPrimsa } = require("../src/data"); // 👈 4
+const createServer = require("../src/createServer");
+const { getPrimsa } = require("../src/data");
 
-// 👇 6
 const login = async (supertest) => {
-  // 👇 7
   const response = await supertest.post("/api/users/login").send({
     email: "admin.user@hogent.be",
     password: "verydifficult",
   });
 
-  // 👇 8
   if (response.statusCode !== 200) {
     throw new Error(response.body.message || "Unknown error occured");
   }
 
-  return `Bearer ${response.body.token}`; // 👈 9
+  return `Bearer ${response.body.token}`;
 };
 
-// 👇 1
 const withServer = (setter) => {
-  // 👈 4
-  let server; // 👈 2
+  let server;
 
   beforeAll(async () => {
-    server = await createServer(); // 👈 3
+    server = await createServer();
 
-    // 👇 4
     setter({
       prisma: getPrimsa(),
       supertest: supertest(server.getApp().callback()),
@@ -35,11 +29,11 @@ const withServer = (setter) => {
   });
 
   afterAll(async () => {
-    await server.stop(); // 👈 5
+    await server.stop();
   });
 };
 
 module.exports = {
   login,
   withServer,
-}; // 👈 1 en 6
+};

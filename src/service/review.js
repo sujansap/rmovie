@@ -11,7 +11,7 @@ const getAll = async (uid) => {
   data = data.map((d) => {
     return { ...d.movie };
   });
-  console.log(data);
+
   return { items: data, count: data.length };
 };
 
@@ -38,7 +38,6 @@ const add = async (uid, mid, review, rating) => {
 
 const deleteById = async (rid) => {
   try {
-    console.log("truing to delete a review with id + " + rid);
     const deleted = await reviewRepository.deleteById(rid);
     if (!deleted) {
       throw Error(`No review with id ${id} exists`, { id });
@@ -49,11 +48,8 @@ const deleteById = async (rid) => {
 };
 
 const updateReview = async (rid, data, userId) => {
-  console.log("wants to update a review");
   const review = await getById(rid);
 
-  console.log(review);
-  console.log(userId);
   if (review.items.userId !== userId) {
     throw ServiceError.forbidden("You cannot edit someone elses review!");
   }

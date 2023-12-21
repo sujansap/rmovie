@@ -9,8 +9,6 @@ const Role = require("../core/roles");
 const checkUserId = (ctx, next) => {
   const { userId, userType } = ctx.state.session;
   const { id } = ctx.params;
-  console.log(userId === id);
-  console.log(`${id}${userId}`);
 
   // You can only get your own data unless you're an admin
   //only an admin gets everyones data
@@ -28,13 +26,12 @@ const checkUserId = (ctx, next) => {
 
 const getAllUsers = async (ctx) => {
   const data = await userService.getAll();
-  console.log(data);
+
   ctx.body = data;
 };
 getAllUsers.validationScheme = null;
 
 const getUserById = async (ctx) => {
-  console.log(ctx.state.session);
   const user = await userService.getById(Number(ctx.params.id));
   ctx.body = user;
 };
@@ -65,14 +62,7 @@ getReviewForMovieForUser.validationScheme = {
     movieId: Joi.number().integer().required(),
   },
 };
-/*
-const updateMovieReviewForUser = async (ctx) => {
-  const uid = Number(ctx.params.userId);
-  const mid = Number(ctx.params.MovieId);
-  const data = { ...ctx.request.body };
-  ctx.body = await userService.updateMovieReviewForUser(uid, mid, data);
-};
-*/
+
 const login = async (ctx) => {
   const { email, password } = ctx.request.body;
 
@@ -88,8 +78,6 @@ login.validationScheme = {
 };
 
 const register = async (ctx) => {
-  console.log("this is happening...");
-  console.log(ctx.request.body);
   const token = await userService.register(ctx.request.body);
   ctx.body = token;
   ctx.status = 200;
@@ -130,7 +118,7 @@ module.exports = (app) => {
 
   //router.get("/:id/reviews", requireAuthentication, getAllReviewsForUser);
   router.get(
-    "/:userId/movies/:movieId/reviews",
+    "/:userId/movies/:movieId/review",
     requireAuthentication,
     validate(getReviewForMovieForUser.validationScheme),
     getReviewForMovieForUser

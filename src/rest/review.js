@@ -9,8 +9,6 @@ const validate = require("../core/validation");
 const { checkUserId } = require("./user");
 
 const getAllReviews = async (ctx) => {
-  console.log("what is happening here");
-
   const userId = ctx.state.session.userId;
 
   const data = await reviewService.getAll(Number(userId));
@@ -32,7 +30,7 @@ const addReview = async (ctx) => {
   const userId = ctx.state.session.userId;
 
   let data = { ...ctx.request.body };
-  console.log("trying to add a review.............");
+
   ctx.body = await reviewService.add(
     Number(userId),
     Number(data.movieId),
@@ -49,7 +47,6 @@ addReview.validate = {
 };
 
 const deleteById = async (ctx) => {
-  console.log("user wants to delete a review for a movie");
   await reviewService.deleteById(Number(ctx.params.id));
   ctx.status = 204;
 };

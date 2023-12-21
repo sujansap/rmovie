@@ -75,18 +75,10 @@ const addUser = async ({ username, password, email, about }) => {
   }
 };
 
-/*
-const getReviewsForUser = async (id) => {
-    const data  = await userRepository.getReviewsForUser(id);
-    return {items:data, count:data.length}
-};
-*/
-
 const getReviewForMovieForUser = async (uid, mid) => {
   const data = await userRepository.getReviewForMovieForUser(uid, mid);
   if (!data) {
-    console.log("something went wrong.");
-    return { items: {}, count: 0 };
+    return {};
   }
   data.title = data.movie.title;
   data.poster = data.movie.poster;
@@ -95,7 +87,7 @@ const getReviewForMovieForUser = async (uid, mid) => {
   delete data.movie;
 
   //wat als er de user nog geen review heeft gemaakt voor een movie
-  return { items: data, count: 1 };
+  return data;
 };
 
 const makeExposedUser = ({ userId, username, about, email, userTypeId }) => ({
@@ -125,8 +117,6 @@ const login = async (email, password) => {
   }
 
   const passwordValid = await verifyPassword(password, user.password);
-  console.log("pass validation done");
-  console.log(passwordValid);
 
   if (!passwordValid) {
     // DO NOT expose we know the user but an invalid password was given

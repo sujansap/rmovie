@@ -1,6 +1,5 @@
-const { shutdownData, getPrimsa, tables } = require("../src/data"); // 👈 2 en 3
+const { shutdownData, getPrimsa, tables } = require("../src/data");
 
-// 👇 1
 module.exports = async () => {
   const prisma = getPrimsa();
   // Remove any leftover data
@@ -10,8 +9,6 @@ module.exports = async () => {
   await prisma[tables.userTypes].deleteMany({});
   await prisma[tables.genres].deleteMany({});
 
-  //await prisma[tables.genres].deleteMany();
-
   // Close database connection
-  await shutdownData(); // 👈 3
+  await shutdownData();
 };

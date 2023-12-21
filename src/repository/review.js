@@ -4,34 +4,8 @@ const { prisma, tables } = require("../data/index");
 const dbData = require("./index");
 
 const TABLE = tables.reviews;
-/*     const reviews = await prisma
-.watchedMovies
-.findMany({
-        where: {
-          movieId: 1,
-        },
-         }
-);
-*/
 
 const getAll = async (uid) => {
-  /*
-  const filter = {
-    where: {
-      userId: uid,
-    },
-
-    include: {
-      movie: {
-        select: {
-          movieId: true,
-          title: true,
-          poster: true,
-        },
-      },
-    },
-  };*/
-
   const filter = {
     where: {
       userId: uid,
@@ -47,35 +21,9 @@ const getAll = async (uid) => {
     },
   };
   return await dbData.getAllData(TABLE, filter);
-  /*
-  try {
-    const reviews = await prisma[TABLE].findMany({
-      where: {
-        userId: uid,
-      },
-    });
-    return reviews;
-  } catch (error) {
-    getLogger().error("Error", {
-      error,
-    });
-    throw error;
-  } finally {
-    await prisma.$disconnect();
-  }
-  */
 };
 
 const deleteById = async (rid) => {
-  /*const filter = {
-    where:{
-      "userId_movieId":{
-        userId:uid,
-        movieId: mid
-      }
-    }
-
-  }*/
   const filter = {
     where: {
       reviewId: rid,
@@ -105,7 +53,7 @@ const getById = async (rid) => {
         },
       },
     });
-    console.log("test---");
+
     return review;
   } catch (error) {
     getLogger().error("Error", {

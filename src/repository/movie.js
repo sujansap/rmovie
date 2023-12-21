@@ -20,12 +20,6 @@ const getAverageRating = async (movieId) => {
   return averageRating;
 };
 const getAllReviewsForMovie = async (mid) => {
-  /*const filter = {
-    where:{
-      movieId:mid
-    }
-  };*/
-
   const filter = {
     where: {
       movieId: mid,
@@ -178,49 +172,6 @@ const addMovie = async ({ title, userId, poster, synopsis, genres }) => {
 
   return addedMovie;
 };
-
-/*
-const addReview = async(uid, mid, review, rating)=>{
-
-  const dataReview =
-  {
-    data:{
-      userId:uid,
-      movieId:mid,
-      review:review,
-      rating:rating
-    }
-  }
-  
-  return await dbData.addData(tables.reviews, dataReview);
-}
-*/
-
-/*
-
-const updateById = async (id, {title, user}) => {
-  try {
-    console.log("here done");
-    await prisma[tables.movies].update({
-      where: {
-        movieId: id
-      }, 
-      data:{
-        title:title,
-        userId:user 
-      }
-    });
-    return id;
-  } catch (error) {
-    getLogger().error('Error', {
-      error,
-    });
-  }finally{
-    await prisma.$disconnect();
-  }
-  
-}
-*/
 
 module.exports = {
   getAll,

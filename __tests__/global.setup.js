@@ -1,20 +1,18 @@
-const config = require("config"); // 👈 2
+const config = require("config");
 
-const { initializeLogger } = require("../src/core/logging"); // 👈 2
-const Role = require("../src/core/roles"); // 👈 4
-const { getPrimsa, tables } = require("../src/data"); // 👈 3 en 4
+const { initializeLogger } = require("../src/core/logging");
+const Role = require("../src/core/roles");
+const { getPrimsa, tables } = require("../src/data");
 
-// 👇 1
 module.exports = async () => {
   // Create a database connection
-  // 👇 2
+
   initializeLogger({
     level: config.get("log.level"),
     disabled: config.get("log.disabled"),
   });
 
-  // Insert a test user with password 12345678
-  const prisma = getPrimsa(); // 👈 3
+  const prisma = getPrimsa();
 
   console.log("we have come here!!!! to the send data file");
 

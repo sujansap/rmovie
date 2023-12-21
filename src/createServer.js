@@ -18,27 +18,6 @@ const installRest = require("./rest");
 const installMiddlewares = require("./core/installMiddlewares");
 const { getPrimsa, shutdownData } = require("./data/index");
 
-//later toegevoegd
-/*
-async function main(){
-  try {
-    const server = await createServer();
-    await server.start();
-
-    async function onClose(){
-      await server.stop();
-      process.exit(0);
-    }
-    process.on('SIGTERM', onClose);
-    process.on('SIGQUIT', onClose);
-
-  } catch (error) {
-    console.log(error);
-    process.exit(-1);
-  }
-}
-*/
-//dit alles moet in main bestand // maar refactor naar verschillende bestanden
 //koa cors
 const CORS_ORIGINS = config.get("cors.origins");
 const CORS_MAX_AGE = config.get("cors.maxAge");
@@ -88,9 +67,9 @@ module.exports = async function createServer() {
 
     start() {
       return new Promise((resolve) => {
-        const port = config.get("port"); // 👈
-        app.listen(port); // 👈
-        getLogger().info(`🚀 Server listening on http://localhost:${port}`); // 👈
+        const port = config.get("port");
+        app.listen(port);
+        getLogger().info(`🚀 Server listening on http://localhost:${port}`);
         resolve();
       });
     },

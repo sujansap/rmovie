@@ -9,7 +9,6 @@ const { prisma } = require("../data/index");
 // all rows back
 const getAllData = async (table, filter) => {
   try {
-    console.log("Receved table:" + table);
     const data = await prisma[table].findMany(filter);
 
     return data;
@@ -41,7 +40,6 @@ const deleteDataById = async (table, filter) => {
   try {
     const rows = await prisma[table].deleteMany(filter);
 
-    console.log(rows);
     return rows;
   } catch (error) {
     getLogger().error("Error", {

@@ -5,7 +5,6 @@ async function main() {
     const server = await createServer();
     await server.start();
 
-    // 👇 6
     async function onClose() {
       await server.stop();
       process.exit(0);

@@ -3,10 +3,8 @@ const Joi = require("joi");
 
 const reviewService = require("../service/review");
 const { requireAuthentication } = require("../core/auth");
-const Role = require("../core/roles");
-const validate = require("../core/validation");
 
-const { checkUserId } = require("./user");
+const validate = require("../core/validation");
 
 const getAllReviews = async (ctx) => {
   const userId = ctx.state.session.userId;
@@ -29,8 +27,8 @@ getById.validationScheme = {
 const addReview = async (ctx) => {
   const userId = ctx.state.session.userId;
 
-  let data = { ...ctx.request.body };
-
+  const data = { ...ctx.request.body };
+  ctx.status = 201;
   ctx.body = await reviewService.add(
     Number(userId),
     Number(data.movieId),
@@ -57,9 +55,8 @@ deleteById.validationScheme = {
 };
 
 const updateReview = async (ctx) => {
-  console.log("here");
   const userId = ctx.state.session.userId;
-  console.log("here1");
+
   let data = { ...ctx.request.body };
   const rid = Number(ctx.params.id);
 
@@ -106,10 +103,6 @@ module.exports = (app) => {
     addReview
   );
 
-  //movieId
-  //van user die ingelogd is
-  //hier zou eigenlijk gecontroleerd moeten worden of het de id
-  //is van een review dat door de gebruiker die het wilt verwijderen is geplaats
   router.delete(
     "/:id",
     requireAuthentication,

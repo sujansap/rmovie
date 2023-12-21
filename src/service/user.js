@@ -1,11 +1,8 @@
-const config = require("config");
-
 const userRepository = require("../repository/user");
 const ServiceError = require("../core/serviceError");
 const { hashPassword, verifyPassword } = require("../core/password");
 const { generateJWT, verifyJWT } = require("../core/jwt");
 const { getLogger } = require("../core/logging");
-const Role = require("../core/roles");
 
 const handleDBError = require("./_handleDBError");
 
@@ -146,20 +143,13 @@ const register = async ({ username, email, about, password }) => {
   return await makeLoginData(user);
 };
 
-/*
-const updateMovieReviewForUser = async(uid, mid, data)=>{
-   return await userRepository.updateMovieReviewForUser(uid, mid, data);
-}
-*/
 module.exports = {
   getAll,
   getById,
-  //getReviewsForUser,
   getReviewForMovieForUser,
   addUser,
   login,
   register,
   checkAndParseSession,
   checkRole,
-  //updateMovieReviewForUser
 };

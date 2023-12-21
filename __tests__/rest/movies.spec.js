@@ -646,15 +646,15 @@ describe("Movies", () => {
 
     it("should 404 with not existing movie", async () => {
       const response = await request
-        .delete(`${url}/4`)
+        .delete(`${url}/404`)
         .set("Authorization", authHeader);
 
       expect(response.statusCode).toBe(404);
       expect(response.body).toMatchObject({
         code: "NOT_FOUND",
-        message: "No movie with id 4 exists",
+        message: "No movie with id 404 exists",
         details: {
-          mid: 4,
+          mid: 404,
         },
       });
       expect(response.body.stack).toBeTruthy();

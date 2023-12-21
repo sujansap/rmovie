@@ -26,11 +26,12 @@
   },
   "scripts": {
     "start": "env-cmd nodemon",
-    "test": "env-cmd -f .env.test jest --runInBand",
-    "test:coverage": "env-cmd -f .env.test jest --runInBand --coverage",
+    "testjest": "env-cmd -f .env.test jest --runInBand",
+    "test:coveragejest": "env-cmd -f .env.test jest --runInBand --coverage",
     "test:prisma:migrate": "env-cmd -f .env.test yarn prisma migrate deploy",
     "test:prisma:seed": "env-cmd -f .env.test yarn prisma db seed",
-    "test:with-migrate": "yarn test:prisma:migrate && yarn test:coverage",
+    "test": "yarn test:prisma:migrate && yarn testjest",
+    "test:coverage": "yarn test:prisma:migrate && yarn test:coveragejest",
     "lint": "npx eslint . --fix"
   },
   "devDependencies": {
